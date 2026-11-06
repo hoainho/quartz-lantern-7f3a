@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 # The job must run with nothing but an API key (`docker run -e API_KEY=... `), so the
 # source site has a default; override with ZENDESK_BASE_URL.
 DEFAULT_ZENDESK_BASE_URL = "https://support.optisigns.com"
+# gemini-3.8-flash answered 503/504 "high demand" in testing; 3.6-flash supports File Search and responds.
+DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"
 
 
 @dataclass(frozen=True)
@@ -23,7 +25,7 @@ class Config:
     log_level: str
     gemini_api_key: str = ""
     gemini_file_search_store: str = ""
-    gemini_model: str = "gemini-3.8-flash"
+    gemini_model: str = DEFAULT_GEMINI_MODEL
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -37,7 +39,7 @@ class Config:
             log_level=os.environ.get("LOG_LEVEL", "INFO").upper(),
             gemini_api_key=os.environ.get("GEMINI_API_KEY") or os.environ.get("API_KEY", ""),
             gemini_file_search_store=os.environ.get("GEMINI_FILE_SEARCH_STORE", ""),
-            gemini_model=os.environ.get("GEMINI_MODEL", "gemini-3.8-flash"),
+            gemini_model=os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
         )
 
     def require_gemini(self) -> None:
