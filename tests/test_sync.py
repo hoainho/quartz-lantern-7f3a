@@ -1,3 +1,5 @@
+import threading
+
 from kbsync.chunking import ChunkingConfig
 from kbsync.document import Document
 from kbsync.store import RemoteDocument
@@ -137,3 +139,45 @@ def test_removals_within_the_budget_still_happen():
 
     assert (result.removed, result.failed) == (10, 0)
     assert len(store.items) == 90
+
+
+class LockedStore(MemoryStore):
+    """MemoryStore safe for concurrent uploads."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._lock = threading.Lock()
+
+    def upload(self, document):
+        if document.article_id in self._fail_upload:
+            raise RuntimeError("indexing failed")
+        with self._lock:
+            self._n += 1
+            name = f"docs/{self._n}"
+            self.items[name] = RemoteDocument(name, document.article_id, document.content_hash)
+            self.uploads.append(document.article_id)
+
+
+def test_parallel_uploads_add_every_document_exactly_once_and_count_chunks():
+    store = LockedStore()
+    docs = [_doc(i, words=19) for i in range(1, 41)]
+
+    result = sync(store, docs, CFG, workers=8)
+
+    assert (result.added, result.failed, result.chunks_estimated) == (40, 0, 40 * 3)
+    assert sorted(store.uploads) == list(range(1, 41))
+    assert sync(store, docs, CFG, workers=8).skipped == 40  # idempotent afterwards
+
+
+def test_parallel_failures_are_isolated_and_old_copies_survive():
+    store = LockedStore()
+    sync(store, [_doc(i, "v1") for i in range(1, 11)], CFG)
+    store._fail_upload = {3, 7}
+
+    result = sync(store, [_doc(i, "v2") for i in range(1, 11)], CFG, workers=4)
+
+    assert (result.updated, result.failed) == (8, 2)
+    hashes = {r.article_id: r.content_hash for r in store.items.values()}
+    assert hashes[3] == "v1" and hashes[7] == "v1"  # failed ones keep their old copy
+    assert all(hashes[i] == "v2" for i in (1, 2, 4, 5, 6, 8, 9, 10))
+    assert len(store.items) == 10

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 
 from kbsync.chunking import DEFAULT_CHUNKING, ChunkingConfig, estimate_chunks
@@ -27,6 +28,7 @@ class SyncResult:
 # unpublishing; deletions beyond this budget are refused (and the run exits non-zero).
 MAX_REMOVED_FRACTION = 0.2
 MIN_REMOVAL_ALLOWANCE = 5
+PROGRESS_EVERY = 25
 
 
 def _delete_all(store: VectorStore, copies: list[RemoteDocument], reason: str) -> int:
@@ -45,6 +47,7 @@ def sync(
     store: VectorStore,
     documents: list[Document],
     chunking: ChunkingConfig = DEFAULT_CHUNKING,
+    workers: int = 1,
 ) -> SyncResult:
     """Upload only new/changed documents, then clean up what they replace.
 
@@ -55,14 +58,22 @@ def sync(
     delta = compute_delta(documents, remote)
     added = updated = failed = chunks = 0
 
-    for kind, batch in (("added", delta.added), ("updated", delta.updated)):
-        for doc in batch:
+    jobs = [("added", doc) for doc in delta.added] + [("updated", doc) for doc in delta.updated]
+    finished = 0
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        pending = {pool.submit(store.upload, doc): (kind, doc) for kind, doc in jobs}
+        for future in as_completed(pending):
+            kind, doc = pending[future]
+            finished += 1
             try:
-                store.upload(doc)
+                future.result()
             except Exception:
                 failed += 1
                 log.exception("upload failed kind=%s article_id=%d file=%s", kind, doc.article_id, doc.filename)
                 continue
+            finally:
+                if finished % PROGRESS_EVERY == 0 or finished == len(jobs):
+                    log.info("progress uploaded=%d/%d", finished, len(jobs))
             chunks += estimate_chunks(doc.content, chunking)
             if kind == "added":
                 added += 1
