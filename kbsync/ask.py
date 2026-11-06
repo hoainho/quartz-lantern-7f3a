@@ -40,6 +40,16 @@ def load_system_prompt(path: Path = SYSTEM_PROMPT_PATH) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
+def title_from_url(url: str) -> str:
+    """'.../articles/360051014713-How-to-Use-YouTube' -> 'How to Use YouTube'.
+
+    The retrieved document's own title is its file name, which is not readable.
+    """
+    slug = url.rstrip("/").rsplit("/", 1)[-1]
+    slug = slug.split("-", 1)[1] if slug.split("-", 1)[0].isdigit() and "-" in slug else slug
+    return slug.replace("-", " ") or url
+
+
 def extract_sources(response: Any, limit: int = MAX_SOURCES) -> list[Source]:
     """Distinct article URLs from retrieval grounding, in retrieval order."""
     sources: list[Source] = []
@@ -54,7 +64,7 @@ def extract_sources(response: Any, limit: int = MAX_SOURCES) -> list[Source]:
             url = meta.get(META_ARTICLE_URL)
             if url and url not in seen:
                 seen.add(url)
-                sources.append(Source(title=context.title or url, url=url))
+                sources.append(Source(title=title_from_url(url), url=url))
     return sources[:limit]
 
 

@@ -1,6 +1,6 @@
 from types import SimpleNamespace as NS
 
-from kbsync.ask import Reply, Source, extract_sources, format_reply, load_system_prompt
+from kbsync.ask import Reply, Source, extract_sources, format_reply, load_system_prompt, title_from_url
 
 
 def _chunk(url, title="T", extra=()):
@@ -32,7 +32,6 @@ def test_sources_are_deduplicated_ordered_and_capped_at_three():
     )
 
     assert [s.url for s in extract_sources(response)] == ["https://h/1", "https://h/2", "https://h/3"]
-    assert extract_sources(response)[0].title == "One"
 
 
 def test_ungrounded_or_empty_response_has_no_sources():
@@ -49,3 +48,11 @@ def test_format_appends_only_urls_the_model_did_not_already_cite():
 
     assert format_reply(reply) == "- Click Add.\nArticle URL: https://h/1\n\nArticle URL: https://h/2"
     assert format_reply(Reply("Plain answer", [])) == "Plain answer"
+
+
+def test_source_title_is_readable_and_comes_from_the_article_url_not_the_file_name():
+    url = "https://s.example/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns"
+    response = _response(_chunk(url, title="360051014713-how-to-use-youtube-with-optisigns.md"))
+
+    assert extract_sources(response)[0].title == "How to Use YouTube with OptiSigns"
+    assert title_from_url("https://h/articles/12345") == "12345"  # no slug: keep the id
