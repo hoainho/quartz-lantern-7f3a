@@ -18,11 +18,9 @@ STORE_DISPLAY_NAME = "support-articles"
 
 
 def build_store(config: Config) -> VectorStore:
-    from google import genai
+    from kbsync.gemini_store import GeminiStore, ensure_store, make_client
 
-    from kbsync.gemini_store import GeminiStore, ensure_store
-
-    client = genai.Client(api_key=config.gemini_api_key)
+    client = make_client(config.gemini_api_key)
     name = ensure_store(client, config.gemini_file_search_store, STORE_DISPLAY_NAME)
     return GeminiStore(client, name)
 

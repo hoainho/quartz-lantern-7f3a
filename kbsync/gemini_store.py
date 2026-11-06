@@ -31,6 +31,23 @@ class UploadFailed(RuntimeError):
     pass
 
 
+def make_client(api_key: str) -> Any:
+    """Gemini client that retries rate limits and transient server errors with backoff.
+
+    The first run uploads hundreds of documents; without this a single 429 would
+    fail an upload that a short wait would have allowed.
+    """
+    from google import genai
+
+    retry = types.HttpRetryOptions(
+        attempts=5,
+        initial_delay=2.0,
+        max_delay=60.0,
+        http_status_codes=[429, 500, 502, 503, 504],
+    )
+    return genai.Client(api_key=api_key, http_options=types.HttpOptions(retry_options=retry))
+
+
 def ensure_store(client: Any, name: str, display_name: str) -> str:
     """Resolve the store to sync into, without needing any stored state.
 
