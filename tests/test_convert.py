@@ -64,3 +64,9 @@ def test_table_without_header_row_promotes_first_row():
     )
     assert md.splitlines()[0] == "| Plan | Limit |"
     assert "|  |" not in md
+
+
+def test_emphasis_inside_headings_is_removed_but_kept_in_body():
+    md = html_to_markdown("<h4><strong>Query and Mutation</strong></h4><p><strong>Note</strong> text</p>")
+    assert md.splitlines()[0] == "#### Query and Mutation"
+    assert "**Note** text" in md

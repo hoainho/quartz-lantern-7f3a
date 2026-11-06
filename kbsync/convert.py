@@ -79,6 +79,11 @@ def _clean(soup: BeautifulSoup) -> None:
     for anchor in soup.find_all("a", href=lambda h: bool(h) and h.startswith("#")):
         anchor.unwrap()
 
+    # Headings are already emphasised; '#### **Title**' is noise.
+    for heading in soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"]):
+        for emphasis in heading.find_all(["strong", "b", "em", "i"]):
+            emphasis.unwrap()
+
     _simplify_tables(soup)
 
     for tag in soup.find_all(["figure", "div", "p"]):
