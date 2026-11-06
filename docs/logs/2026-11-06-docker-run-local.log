@@ -1,0 +1,7 @@
+2026-11-06T09:38:41+0000 INFO kbsync.zendesk fetched page=1 articles=100
+2026-11-06T09:38:42+0000 INFO kbsync.zendesk fetched page=2 articles=100
+2026-11-06T09:38:43+0000 INFO kbsync.zendesk fetched page=3 articles=100
+2026-11-06T09:38:44+0000 INFO kbsync.zendesk fetched page=4 articles=98
+2026-11-06T09:38:44+0000 INFO kbsync.scrape scraped articles=398 dir=/tmp/articles
+2026-11-06T09:38:45+0000 INFO kbsync.gemini_store reusing file search store name=fileSearchStores/supportarticles-7p0xuqudsdq3
+2026-11-06T09:39:12+0000 INFO kbsync.sync sync done added=0 updated=0 skipped=398 removed=0 failed=0 chunks_estimated=0
