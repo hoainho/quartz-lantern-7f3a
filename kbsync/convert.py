@@ -52,6 +52,10 @@ def _simplify_tables(soup: BeautifulSoup) -> None:
                 paragraph.extend(list(row.find(["td", "th"]).contents))
                 quote.append(paragraph)
             table.replace_with(quote)
+        elif not table.find("th"):
+            # Markdown tables need a header row; markdownify would emit an empty one.
+            for cell in rows[0].find_all("td"):
+                cell.name = "th"
 
 
 def _clean(soup: BeautifulSoup) -> None:

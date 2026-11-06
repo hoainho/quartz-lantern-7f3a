@@ -55,3 +55,12 @@ def test_underscores_not_escaped_and_whitespace_normalised():
     assert "my_file_name.txt ok" in md
     assert "\\_" not in md
     assert "\n\n\n" not in md
+
+
+def test_table_without_header_row_promotes_first_row():
+    md = html_to_markdown(
+        "<table><tbody><tr><td>Plan</td><td>Limit</td></tr>"
+        "<tr><td>Pro</td><td>5</td></tr></tbody></table>"
+    )
+    assert md.splitlines()[0] == "| Plan | Limit |"
+    assert "|  |" not in md
