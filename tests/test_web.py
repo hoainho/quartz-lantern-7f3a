@@ -21,7 +21,10 @@ def test_valid_question_returns_text_and_sources():
     status, payload = answer_payload(_body(question="  hi  "), _ask)
 
     assert status == 200
-    assert payload == {"text": "* answer to hi", "sources": [{"title": "Doc", "url": "https://h/1"}]}
+    assert payload == {
+        "text": "* answer to hi\n\nArticle URL: https://h/1",
+        "sources": [{"title": "Doc", "url": "https://h/1"}],
+    }
 
 
 @pytest.mark.parametrize(
@@ -57,7 +60,7 @@ def test_http_round_trip_serves_page_and_answers_over_the_wire():
         req = urllib.request.Request(
             base + "/api/ask", data=_body(question="hi"), headers={"Content-Type": "application/json"}
         )
-        assert json.load(urllib.request.urlopen(req))["text"] == "* answer to hi"
+        assert json.load(urllib.request.urlopen(req))["text"].startswith("* answer to hi")
         with pytest.raises(urllib.error.HTTPError) as err:
             urllib.request.urlopen(base + "/missing")
         assert err.value.code == 404

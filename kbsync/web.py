@@ -12,7 +12,7 @@ import logging
 from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from kbsync.ask import Reply, ask
+from kbsync.ask import Reply, ask, format_reply
 from kbsync.config import Config
 from kbsync.log import configure_logging
 
@@ -53,7 +53,8 @@ PAGE = """<!doctype html>
 const logEl = document.getElementById("log"), q = document.getElementById("q"), go = document.getElementById("go");
 const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const inline = s => esc(s).replace(/\\*\\*(.+?)\\*\\*/g,"<strong>$1</strong>")
-  .replace(/(https?:\\/\\/[^\\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  .replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^)\\s]+)\\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+  .replace(/(^|[^"'>])(https?:\\/\\/[^\\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');
 function render(text){            // bullets -> <ul>, everything else -> paragraphs; input is escaped first
   let html = "", open = false;
   for (const line of text.split("\\n")) {
@@ -103,7 +104,7 @@ def answer_payload(raw_body: bytes, ask_fn: Callable[[str], Reply]) -> tuple[int
     except Exception:
         log.exception("ask failed")
         return 502, {"error": "the model request failed; please try again"}
-    return 200, {"text": reply.text, "sources": [{"title": s.title, "url": s.url} for s in reply.sources]}
+    return 200, {"text": format_reply(reply), "sources": [{"title": s.title, "url": s.url} for s in reply.sources]}
 
 
 def make_server(host: str, port: int, ask_fn: Callable[[str], Reply]) -> ThreadingHTTPServer:
