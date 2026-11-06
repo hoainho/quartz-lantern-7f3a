@@ -41,3 +41,14 @@ def test_require_gemini_fails_fast_without_key(monkeypatch):
 
     monkeypatch.setenv("API_KEY", "k")
     Config.from_env().require_gemini()
+
+
+def test_upload_workers_defaults_to_four_and_never_drops_below_one(monkeypatch):
+    monkeypatch.delenv("UPLOAD_WORKERS", raising=False)
+    assert Config.from_env().upload_workers == 4
+
+    monkeypatch.setenv("UPLOAD_WORKERS", "0")
+    assert Config.from_env().upload_workers == 1
+
+    monkeypatch.setenv("UPLOAD_WORKERS", "8")
+    assert Config.from_env().upload_workers == 8

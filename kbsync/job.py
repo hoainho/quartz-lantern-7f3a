@@ -32,7 +32,7 @@ def run(
 ) -> SyncResult:
     config.require_gemini()  # fail before touching the network
     documents = scrape_fn(config)
-    return sync(store_factory(config), documents)
+    return sync(store_factory(config), documents, workers=config.upload_workers)
 
 
 def main() -> int:

@@ -26,6 +26,7 @@ class Config:
     gemini_api_key: str = ""
     gemini_file_search_store: str = ""
     gemini_model: str = DEFAULT_GEMINI_MODEL
+    upload_workers: int = 4  # parallel uploads; the first full sync is ~400 files at ~10 s each
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -40,6 +41,7 @@ class Config:
             gemini_api_key=os.environ.get("GEMINI_API_KEY") or os.environ.get("API_KEY", ""),
             gemini_file_search_store=os.environ.get("GEMINI_FILE_SEARCH_STORE", ""),
             gemini_model=os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
+            upload_workers=max(1, int(os.environ.get("UPLOAD_WORKERS", "4"))),
         )
 
     def require_gemini(self) -> None:
