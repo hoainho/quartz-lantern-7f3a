@@ -42,7 +42,7 @@ Tick an item only when it is verified and the evidence is linked.
 - [ ] README accurate against actual behaviour
 
 ## Bonus (+5)
-- [x] Unit tests (slug/hash, cleaning, delta classification) pass locally - 63 tests (`pytest`), no CI configured
+- [x] Unit tests (slug/hash, cleaning, delta classification) pass - 65 tests locally and green on GitHub Actions (`.github/workflows/tests.yml`)
 
 ## Submission note
 - [ ] State what was cut and why (assignment asks for this)
