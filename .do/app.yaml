@@ -1,0 +1,25 @@
+name: kb-sync
+region: sgp
+
+jobs:
+  - name: daily-sync
+    kind: SCHEDULED
+    github:
+      repo: hoainho/quartz-lantern-7f3a
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: Dockerfile
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    instance_count: 1
+    schedule:
+      cron: "0 2 * * *" # once per day, 02:00 UTC
+      time_zone: Etc/UTC
+    envs:
+      # Value is entered in the DigitalOcean dashboard (encrypted); never committed.
+      - key: GEMINI_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: LOG_LEVEL
+        scope: RUN_TIME
+        value: INFO
