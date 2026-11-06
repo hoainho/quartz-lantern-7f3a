@@ -1,0 +1,17 @@
+# Live delta test against the real store (398 documents), 4 upload workers. HTTP client chatter filtered.
+# 1) delete one remote document -> sync must re-add exactly that article
+# 2) tamper with one article's text -> sync must replace it and delete the old copy
+# 3) restore the real text -> sync must replace the tampered copy again
+2026-11-06T16:42:55+0700 INFO kbsync.gemini_store reusing file search store name=fileSearchStores/supportarticles-7p0xuqudsdq3
+2026-11-06T16:43:05+0700 INFO kbsync.scrape scraped articles=398 dir=data/articles
+>> deleting remote article 56493703696659
+2026-11-06T16:44:11+0700 INFO kbsync.sync progress uploaded=1/1
+2026-11-06T16:44:11+0700 INFO kbsync.sync sync done added=1 updated=0 skipped=397 removed=0 failed=0 chunks_estimated=5
+>> tampering article 56498391179667
+2026-11-06T16:44:46+0700 INFO kbsync.sync progress uploaded=1/1
+2026-11-06T16:44:48+0700 INFO kbsync.sync sync done added=0 updated=1 skipped=397 removed=0 failed=0 chunks_estimated=3
+>> copies of tampered article in store: 1 ['d121be31']
+>> restoring
+2026-11-06T16:45:45+0700 INFO kbsync.sync progress uploaded=1/1
+2026-11-06T16:45:46+0700 INFO kbsync.sync sync done added=0 updated=1 skipped=397 removed=0 failed=0 chunks_estimated=3
+>> final doc count: 398
