@@ -1,7 +1,7 @@
 # Support-article sync job
 
 Scrapes a Zendesk Help Center, normalises articles to Markdown, and keeps an
-OpenAI vector store in sync once per day (only new/changed articles are uploaded).
+Gemini File Search store in sync once per day (only new/changed articles are uploaded).
 
 > Status: in progress. See [docs/PLAN.md](docs/PLAN.md) and [docs/CHECKLIST.md](docs/CHECKLIST.md).
 

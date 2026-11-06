@@ -7,7 +7,7 @@
 - Code commits include their tests. Never commit `.env`, keys, or `data/`.
 
 ## Code
-- Python 3.12, type hints, small single-purpose modules under `src/`.
+- Python 3.12, type hints, small single-purpose modules in the `kbsync/` package; tests in `tests/`.
 - Config only via environment variables (see `.env.sample`).
 - Logs are structured one-liners; counts are logged as `added=N updated=N skipped=N`.
 - `main.py` runs once and exits 0 on success, non-zero on any failure.
