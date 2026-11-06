@@ -8,12 +8,12 @@ Tick an item only when it is verified and the evidence is linked.
 - [ ] Gemini API key (stored only in local `.env`; AI Studio account)
 
 ## 1. Scrape -> Markdown (25)
-- [x] >= 30 articles pulled from the Help Center (Zendesk API) - client verified live, 398 published articles
-- [ ] Each article converted to clean Markdown
-- [ ] One file per article (`<id>-<slug>.md`)
-- [ ] Relative links, code blocks, headings preserved
-- [ ] Nav / ads / scripts removed
-- [ ] Spot-check of 5 random files recorded in README or PR notes
+- [x] >= 30 articles pulled from the Help Center (Zendesk API) - 398 published articles fetched live (4 pages)
+- [x] Each article converted to clean Markdown - 17 unit tests; 398 files, avg ~4.7k chars, none under 400 chars, all with front-matter
+- [x] One file per article (`<id>-<slug>.md`) - `python -m kbsync.scrape` wrote 398 files (2.6 MB)
+- [x] Relative links, code blocks, headings preserved - verified in sampled files (fenced GraphQL query, 10 links, 5-6 headings per article)
+- [x] Nav / ads / scripts removed - no TOC lists or fragment links left; only 2 files contain `<iframe>` and both are inside code samples
+- [x] Spot-check of 5 random files (seed 7): powerpoint-transition, guardian-news-app, get-started-api, move-screen-to-other-team, feeds
 
 ## 2. Assistant + vector store (20)
 - [ ] System prompt used **verbatim** (`prompts/system_prompt.txt`)
