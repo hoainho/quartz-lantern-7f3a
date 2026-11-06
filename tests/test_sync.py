@@ -116,3 +116,24 @@ def test_duplicate_left_by_an_interrupted_run_is_cleaned_up_while_skipping():
 
     assert (result.skipped, result.failed) == (1, 0)
     assert len(store.items) == 1
+
+
+def test_mass_disappearance_is_refused_so_a_source_outage_cannot_wipe_the_store():
+    store = MemoryStore()
+    sync(store, [_doc(i) for i in range(1, 101)], CFG)
+
+    result = sync(store, [_doc(i) for i in range(1, 51)], CFG)  # source suddenly returns half
+
+    assert (result.removed, result.skipped) == (0, 50)
+    assert result.failed == 50  # exits non-zero; nothing deleted
+    assert len(store.items) == 100
+
+
+def test_removals_within_the_budget_still_happen():
+    store = MemoryStore()
+    sync(store, [_doc(i) for i in range(1, 101)], CFG)
+
+    result = sync(store, [_doc(i) for i in range(1, 91)], CFG)  # 10% unpublished
+
+    assert (result.removed, result.failed) == (10, 0)
+    assert len(store.items) == 90

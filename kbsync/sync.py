@@ -23,6 +23,12 @@ class SyncResult:
     chunks_estimated: int
 
 
+# A scrape that suddenly lacks many articles is more likely a source outage than mass
+# unpublishing; deletions beyond this budget are refused (and the run exits non-zero).
+MAX_REMOVED_FRACTION = 0.2
+MIN_REMOVAL_ALLOWANCE = 5
+
+
 def _delete_all(store: VectorStore, copies: list[RemoteDocument], reason: str) -> int:
     """Delete each copy; return how many deletions failed (they are retried next run)."""
     failures = 0
@@ -45,7 +51,8 @@ def sync(
     Order matters: an old copy is deleted only after its replacement is indexed,
     so a failed upload never leaves an article missing from the knowledge base.
     """
-    delta = compute_delta(documents, store.list_documents())
+    remote = store.list_documents()
+    delta = compute_delta(documents, remote)
     added = updated = failed = chunks = 0
 
     for kind, batch in (("added", delta.added), ("updated", delta.updated)):
@@ -66,10 +73,20 @@ def sync(
     for doc in delta.skipped:  # surplus duplicates from an interrupted earlier run
         failed += _delete_all(store, delta.superseded.get(doc.article_id, []), "duplicate")
 
-    removed = len(delta.removed)
-    removal_failures = _delete_all(store, delta.removed, "removed-at-source")
-    failed += removal_failures
-    removed -= removal_failures
+    removed_articles = len({r.article_id for r in delta.removed})
+    allowed = max(MIN_REMOVAL_ALLOWANCE, int(MAX_REMOVED_FRACTION * len({r.article_id for r in remote})))
+    if removed_articles > allowed:
+        # A partial or broken source response must never wipe the knowledge base.
+        log.error(
+            "refusing to delete %d articles (limit %d); check the source, then re-run",
+            removed_articles, allowed,
+        )
+        removed = 0
+        failed += len(delta.removed)
+    else:
+        removal_failures = _delete_all(store, delta.removed, "removed-at-source")
+        failed += removal_failures
+        removed = len(delta.removed) - removal_failures
 
     result = SyncResult(added, updated, len(delta.skipped), removed, failed, chunks)
     log.info(
