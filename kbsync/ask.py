@@ -90,13 +90,13 @@ def main() -> None:
     config = Config.from_env()
     configure_logging(config.log_level)
     config.require_gemini()
-    if not config.gemini_file_search_store:
-        raise SystemExit("GEMINI_FILE_SEARCH_STORE is required to ask questions")
 
-    from google import genai
+    from kbsync.gemini_store import ensure_store, make_client
+    from kbsync.job import STORE_DISPLAY_NAME
 
-    client = genai.Client(api_key=config.gemini_api_key)
-    reply = ask(client, config.gemini_model, config.gemini_file_search_store, args.question)
+    client = make_client(config.gemini_api_key)
+    store_name = ensure_store(client, config.gemini_file_search_store, STORE_DISPLAY_NAME)
+    reply = ask(client, config.gemini_model, store_name, args.question)
     print(format_reply(reply))
 
 
