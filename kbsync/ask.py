@@ -83,9 +83,17 @@ def ask(client: Any, model: str, store_name: str, question: str) -> Reply:
 
 
 def format_reply(reply: Reply) -> str:
-    """Answer followed by the retrieved sources; no duplicate lines if the model cited them."""
+    """Answer followed by 'Article URL:' lines for retrieved sources.
+
+    The system prompt asks the model for those lines but does not always comply (it sometimes
+    writes markdown links instead). If the model used the prefix, only sources it did not cite
+    are added; if it never used the prefix, every retrieved source is listed in the required form.
+    """
     lines = [reply.text.rstrip()]
-    missing = [s for s in reply.sources if s.url not in reply.text]
+    if "Article URL:" in reply.text:
+        missing = [s for s in reply.sources if s.url not in reply.text]
+    else:
+        missing = list(reply.sources)
     if missing:
         lines.append("")
         lines.extend(f"Article URL: {s.url}" for s in missing)

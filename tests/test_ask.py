@@ -56,3 +56,12 @@ def test_source_title_is_readable_and_comes_from_the_article_url_not_the_file_na
 
     assert extract_sources(response)[0].title == "How to Use YouTube with OptiSigns"
     assert title_from_url("https://h/articles/12345") == "12345"  # no slug: keep the id
+
+
+def test_model_that_wrote_markdown_links_instead_of_the_prefix_still_gets_article_url_lines():
+    reply = Reply(
+        text="Steps...\n\nSee [Guide](https://h/1) for more.",
+        sources=[Source("Guide", "https://h/1"), Source("Other", "https://h/2")],
+    )
+
+    assert format_reply(reply).endswith("\n\nArticle URL: https://h/1\nArticle URL: https://h/2")
