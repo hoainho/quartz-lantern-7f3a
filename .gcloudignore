@@ -1,0 +1,13 @@
+# Never upload secrets or local artefacts to Cloud Build.
+.git
+.github
+.venv
+.env
+.env.*
+!.env.sample
+data
+docs
+tests
+__pycache__
+.pytest_cache
+*.pyc
