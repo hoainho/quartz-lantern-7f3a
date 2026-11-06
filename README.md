@@ -16,7 +16,7 @@ cp .env.sample .env      # set GEMINI_API_KEY (or API_KEY); everything else has 
 ```bash
 .venv/bin/python -m kbsync.scrape                  # Markdown only -> data/articles/ (no API key needed)
 .venv/bin/python main.py                           # scrape + sync delta; exits 0 on success
-.venv/bin/python -m kbsync.ask "How do I add a YouTube video?"   # sanity check (needs GEMINI_FILE_SEARCH_STORE)
+.venv/bin/python -m kbsync.ask "How do I add a YouTube video?"   # sanity check against the synced store
 .venv/bin/python -m pytest                         # tests
 docker build -t sync-job . && docker run --rm -e API_KEY=... sync-job
 ```
