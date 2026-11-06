@@ -17,6 +17,7 @@ cp .env.sample .env      # set GEMINI_API_KEY (or API_KEY); everything else has 
 .venv/bin/python -m kbsync.scrape                  # Markdown only -> data/articles/ (no API key needed)
 .venv/bin/python main.py                           # scrape + sync delta; exits 0 on success
 .venv/bin/python -m kbsync.ask "How do I add a YouTube video?"   # sanity check against the synced store
+.venv/bin/python -m kbsync.web                     # chat UI on http://127.0.0.1:8080 (localhost only)
 .venv/bin/python -m pytest                         # tests
 docker build -t sync-job . && docker run --rm -e API_KEY=... sync-job
 ```
@@ -42,6 +43,6 @@ Run artefacts (readable without a GCP login), each ending in exit 0:
 Refresh the artefact after any run: `PROJECT_ID=kbsync-7f3a deploy/gcp/logs.sh`.
 
 ## Sample answer
-"How do I add a YouTube video?" returns five bullets and a model-written `Article URL:` line ([transcript](docs/sanity-check.md)). The brief's OpenAI Assistants Playground no longer exists, so this is the CLI against the same File Search store.
+Local chat UI (`python -m kbsync.web`, then open http://127.0.0.1:8080): "How do I add a YouTube video?" returns five bullets and `Article URL:` lines, with the retrieved articles listed underneath. The brief's OpenAI Assistants Playground no longer exists, so the UI and the CLI query the same File Search store. More answers and an out-of-scope refusal: [transcript](docs/sanity-check.md).
 
-![answers with cited URLs](docs/img/sanity-check.png)
+![chat UI answering with cited URLs](docs/img/chat-ui.png)
