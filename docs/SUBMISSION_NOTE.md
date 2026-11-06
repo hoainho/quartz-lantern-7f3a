@@ -20,7 +20,7 @@ The assignment asks candidates to say what they cut. Updated 2026-11-06 after th
 - Answers: five bullets and model-written `Article URL:` lines for two in-scope questions; an out-of-scope question is refused.
 
 ## Part 1 - not proven
-- The first run triggered by Cloud Scheduler itself (due 2026-11-07 02:23 UTC); only a manual execution of the same job has run.
+- The run started by the Scheduler's own clock (due 2026-11-07 02:23 UTC). Verified instead: Scheduler -> Cloud Run triggered on demand (`gcloud scheduler jobs run`, execution `kb-sync-fh5cm`, exit 0); the cron expression and next fire time are set and the job is `ENABLED`.
 - The removal path (article unpublished at the source) has been exercised by tests, not against the live store.
 - The ask CLI uses `generate_content`, which the Gemini docs label "Legacy" in favour of the Interactions API; the job itself uses neither.
 - First-sync time depends on `UPLOAD_WORKERS` and Gemini rate limits; 4 workers gave no 429s in this run, which does not bound a busier day.

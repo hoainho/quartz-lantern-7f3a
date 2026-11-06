@@ -37,6 +37,7 @@ Deployed with `deploy/gcp/deploy.sh` (project `kbsync-7f3a`, `us-central1`): Clo
 
 Run artefacts (readable without a GCP login), each ending in exit 0:
 - [Cloud Run execution `kb-sync-9m6vc`](docs/logs/2026-11-06T094051Z-kb-sync-9m6vc.log): `added=0 updated=0 skipped=398 removed=0 failed=0`
+- [Cloud Scheduler-triggered execution `kb-sync-fh5cm`](docs/logs/2026-11-06T113350Z-kb-sync-fh5cm.log): started via the Scheduler, `skipped=398`, exit 0
 - [First full sync, local](docs/logs/2026-11-06-first-full-sync-local.log): `added=398 failed=0 chunks_estimated=942` in 14m34s (4 upload workers)
 - [Docker run with only `API_KEY`](docs/logs/2026-11-06-docker-run-local.log): `skipped=398`
 
