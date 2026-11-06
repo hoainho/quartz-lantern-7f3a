@@ -32,10 +32,25 @@ class UploadFailed(RuntimeError):
 
 
 def ensure_store(client: Any, name: str, display_name: str) -> str:
-    """Return the resource name of an existing store, or create one when `name` is empty."""
+    """Resolve the store to sync into, without needing any stored state.
+
+    An explicit `name` must exist. Otherwise reuse the store whose display name
+    matches (so a fresh container finds yesterday's store) and create it only
+    when none exists. Several matches are ambiguous, so the job refuses to guess.
+    """
+    stores = client.file_search_stores
     if name:
-        return client.file_search_stores.get(name=name).name
-    created = client.file_search_stores.create(config={"display_name": display_name})
+        return stores.get(name=name).name
+    matches = [s for s in stores.list() if s.display_name == display_name]
+    if len(matches) > 1:
+        raise RuntimeError(
+            f"{len(matches)} file search stores are named {display_name!r}; "
+            "set GEMINI_FILE_SEARCH_STORE to pick one"
+        )
+    if matches:
+        log.info("reusing file search store name=%s", matches[0].name)
+        return matches[0].name
+    created = stores.create(config={"display_name": display_name})
     log.info("created file search store name=%s", created.name)
     return created.name
 

@@ -14,8 +14,9 @@ def _meta(**pairs):
 class FakeClient:
     """Minimal stand-in for genai.Client covering only what the adapter calls."""
 
-    def __init__(self, documents=(), ops_until_done=0, error=None):
+    def __init__(self, documents=(), ops_until_done=0, error=None, stores=()):
         self.documents = list(documents)
+        self.stores = list(stores)
         self.upload_calls = []
         self.delete_calls = []
         self.created = []
@@ -27,6 +28,7 @@ class FakeClient:
             upload_to_file_search_store=self._upload,
             get=lambda name: NS(name=name),
             create=self._create,
+            list=lambda: iter(self.stores),
         )
         self.operations = NS(get=self._get_operation)
 
@@ -128,9 +130,33 @@ def test_delete_forces_removal_of_the_named_document():
     assert client.delete_calls == [("fileSearchStores/s1/documents/a", {"force": True})]
 
 
-def test_ensure_store_reuses_existing_or_creates_when_name_empty():
-    client = FakeClient()
+def test_ensure_store_uses_explicit_name_without_listing_or_creating():
+    client = FakeClient(stores=[NS(name="fileSearchStores/other", display_name="kb")])
     assert ensure_store(client, "fileSearchStores/s1", "kb") == "fileSearchStores/s1"
     assert client.created == []
+
+
+def test_ensure_store_finds_yesterdays_store_by_display_name():
+    client = FakeClient(
+        stores=[
+            NS(name="fileSearchStores/unrelated", display_name="other"),
+            NS(name="fileSearchStores/kb-1", display_name="kb"),
+        ]
+    )
+    assert ensure_store(client, "", "kb") == "fileSearchStores/kb-1"
+    assert client.created == []
+
+
+def test_ensure_store_creates_only_when_no_store_matches():
+    client = FakeClient(stores=[NS(name="fileSearchStores/unrelated", display_name="other")])
     assert ensure_store(client, "", "kb") == "fileSearchStores/new-1"
     assert client.created == [{"display_name": "kb"}]
+
+
+def test_ensure_store_refuses_to_guess_between_duplicates():
+    client = FakeClient(
+        stores=[NS(name="fileSearchStores/a", display_name="kb"), NS(name="fileSearchStores/b", display_name="kb")]
+    )
+    with pytest.raises(RuntimeError, match="2 file search stores"):
+        ensure_store(client, "", "kb")
+    assert client.created == []
