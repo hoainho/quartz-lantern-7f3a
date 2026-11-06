@@ -5,10 +5,10 @@ Tick an item only when it is verified and the evidence is linked.
 
 ## 0. Warm-up
 - [ ] Trial account created; chatted with the reference bot
-- [ ] AI platform account + API key (stored only in local `.env`)
+- [ ] Gemini API key (stored only in local `.env`; AI Studio account)
 
 ## 1. Scrape -> Markdown (25)
-- [ ] >= 30 articles pulled from the Help Center (Zendesk API)
+- [x] >= 30 articles pulled from the Help Center (Zendesk API) - client verified live, 398 published articles
 - [ ] Each article converted to clean Markdown
 - [ ] One file per article (`<id>-<slug>.md`)
 - [ ] Relative links, code blocks, headings preserved
@@ -17,9 +17,9 @@ Tick an item only when it is verified and the evidence is linked.
 
 ## 2. Assistant + vector store (20)
 - [ ] System prompt used **verbatim** (`prompts/system_prompt.txt`)
-- [ ] Markdown uploaded to the vector store **via Python script / API** (no UI)
+- [ ] Markdown uploaded to the Gemini File Search store **via Python script / API** (no UI)
 - [ ] Chunking strategy chosen and explained in README
-- [ ] Log shows number of files and chunks embedded
+- [ ] Log shows number of files and chunks embedded (chunks estimated locally, see DECISIONS D5)
 - [ ] Sanity check "How do I add a YouTube video?" answered correctly with citations
 - [ ] Screenshot saved in `docs/img/`
 

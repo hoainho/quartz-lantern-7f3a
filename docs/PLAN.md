@@ -8,7 +8,7 @@ bottom of the "Cut order" list, never the graded core.
 |---|---|---|---|
 | 0 | Foundation: repo, conventions, plan, checklist, decisions | 0.5h | Repo on GitHub, docs committed, decisions recorded |
 | 1 | Scrape -> clean Markdown | 1.5h | >= 30 `.md` files; 5 random files spot-checked clean (headings, code, relative links kept; nav/ads gone) |
-| 2 | Vector store upload via API + assistant | 2h | Log shows `files=N chunks=M`; sanity question answered with `Article URL:` citations; screenshot saved |
+| 2 | Gemini File Search upload via API + sanity check | 2h | Log shows `files=N chunks_estimated=M`; sanity question answered with `Article URL:` citations; screenshot saved |
 | 3 | Delta detection, `main.py`, Docker | 2h | Run 1 -> `added=N`; run 2 -> `added=0 updated=0 skipped=N`; `docker run` exits 0 |
 | 4 | Deploy as daily cloud job | 1.5h | One real scheduled/triggered run on the cloud with counts in logs; link or artefact saved |
 | 5 | README (<= 1 page), tests, cleanup | 1h (inside budget) | README complete; `pytest` green; no secrets in history |
@@ -18,26 +18,25 @@ bottom of the "Cut order" list, never the graded core.
 ### Sprint 0 - Foundation
 - [x] Private repo with a neutral, cryptic name
 - [x] `.gitignore`, `.env.sample`, pinned dependencies
-- [ ] `docs/PLAN.md`, `docs/CHECKLIST.md`, `docs/DECISIONS.md`
-- [ ] `AGENTS.md` (conventions), README skeleton
+- [x] `docs/PLAN.md`, `docs/CHECKLIST.md`, `docs/DECISIONS.md`
+- [x] `AGENTS.md` (conventions), README skeleton
 
 ### Sprint 1 - Scrape to Markdown (25 pts)
-- Read `/api/v2/help_center/{locale}/articles.json` with pagination; honour `next_page`.
-- Skip drafts; keep `id`, `title`, `html_url`, `updated_at`, `body`.
-- Convert `body` HTML with BeautifulSoup + markdownify: drop nav/ads/scripts, keep headings, fenced code, lists, tables, links (relative links preserved, absolute article URL in front-matter).
-- File name: `<id>-<slug>.md` (stable across title edits is not guaranteed, so id is the identity).
-- Front-matter: `title`, `url`, `updated_at`, `content_hash`.
+- [x] Zendesk client with pagination, retries, draft filtering (398 published articles live)
+- [ ] HTML -> Markdown: BeautifulSoup pre-clean + markdownify; drop scripts/styles/images, unwrap spans, remove in-article TOC (fragment-only link lists), iframe embeds -> link line, fenced code, tables, relative links preserved
+- [ ] File name `<id>-<slug>.md`; front-matter `title`, `url`, `updated_at`, `content_hash` (sha256 of title + Markdown body, excludes volatile fields)
+- [ ] Scrape CLI writing all articles to `DATA_DIR`; spot-check 5 files
 
-### Sprint 2 - Vector store upload (20 pts)
-- Create/reuse vector store; upload each file via API; attach with static chunking (see DECISIONS).
-- Wait for indexing; log files and chunks.
-- Create the assistant surface (Responses + File Search; Playground test) with the system prompt verbatim from `prompts/system_prompt.txt`.
+### Sprint 2 - Gemini File Search upload (20 pts)
+- Create/reuse a File Search store; upload each file via API with `custom_metadata` and whitespace chunking (DECISIONS D3, D4).
+- Poll the upload operations until done; log files and chunks (chunk count estimated, D5).
+- Sanity-check CLI: Gemini model + `file_search` tool + system prompt verbatim from `prompts/system_prompt.txt`; AI Studio screenshot if it exposes File Search stores.
 - Sanity check: "How do I add a YouTube video?" -> screenshot with citations.
 
 ### Sprint 3 - Delta + Docker (part of 15 pts)
-- Identity = article id. Change signal = `content_hash` (sha256 of rendered Markdown), `updated_at` as cheap pre-filter.
-- State lives on the vector store file `attributes`, so the container needs no persistent disk.
-- added: no file with that id; updated: hash differs -> replace; skipped: hash equal.
+- Identity = `article_id`. Change signal = `content_hash`; `updated_at` is informational.
+- State lives on document `custom_metadata`, so the container needs no persistent disk.
+- added: no document with that id; updated: hash differs -> upload new, delete old; skipped: hash equal.
 - `main.py` runs once, logs counts, exits 0 (non-zero on failure).
 
 ### Sprint 4 - Daily job (part of 15 pts)
