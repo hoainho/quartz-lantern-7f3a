@@ -1,32 +1,50 @@
-# Submission note: what was cut, changed, or is unproven
+# Submission notes
 
-The assignment asks candidates to say what they cut. Updated 2026-11-06 after the live runs.
+Reviewed on 2026-11-07 against the original Part 1 brief. This document separates working behavior from substitutions and gaps. The [checklist](CHECKLIST.md) maps each requirement to evidence.
 
-## Part 1 - deviations from the brief
-| Item | What I did instead | Why |
+## Deviations from the brief
+
+| Requirement | Submitted implementation | Qualification |
 |---|---|---|
-| "Create the assistant in the OpenAI Playground / AI Studio" | The assistant is Gemini `gemini-3.6-flash` + the `file_search` tool + the verbatim system prompt, reachable through `python -m kbsync.ask` (CLI) and `python -m kbsync.web` (local chat UI, localhost only); the prompt is versioned in `prompts/system_prompt.txt`. `docs/img/chat-ui.png` is a real browser capture of that UI; `docs/img/sanity-check.png` is rendered from CLI output. | The OpenAI Assistants API was shut down on 2026-08-26 and saved Prompt objects are scheduled for removal on 2026-11-30. In AI Studio the chat Tools list offers only Structured outputs, Code execution, Function calling, Grounding with Google Search, Grounding with Google Maps and URL context (`docs/img/ai-studio-tools.png`, captured by the author): no File Search. This matches Google's docs, where stores are attached through the API (`file_search_store_names`) and the only AI Studio mention is a separate "Ask the Manual" demo that needs a paid key. The same screenshot shows the system prompt pasted as a user message and Google Search grounding switched on, so an AI Studio chat is not a faithful test of "only answer using the uploaded docs". |
-| Model | `gemini-3.6-flash` | `gemini-3.8-flash` (the docs' example) answered 503/504 "high demand" on every call in testing, with and without File Search. |
-| "Log how many chunks were embedded" | `chunks_estimated=942`, computed locally by replaying the 400/50 whitespace window | The File Search API documents no chunk count or chunk listing |
-| Store state for "upload only the delta" | Hash and article id are `custom_metadata` on each document; no database or volume | Scheduled containers have no durable disk |
-| Delta also deletes | Articles removed from the source are deleted, with a guard that refuses to delete more than max(5, 20%) at once | A knowledge base must not answer from unpublished articles; the guard stops a partial source response from wiping it |
-| Images in articles | Dropped (alt text not kept); YouTube/Vimeo embeds become `Video: <url>` lines | Image URLs add retrieval noise; the brief lists headings, code and links only |
-| Hosting | GCP Cloud Run Job + Cloud Scheduler (not DigitalOcean) | Chosen by the author; free within quota. Spec: `deploy/gcp/deploy.sh` |
+| Create and test the assistant in AI Studio or Playground | Gemini File Search through the Python API, with the verbatim system instruction, a CLI and a local chat UI | The [recorded AI Studio experiment](img/ai-studio-tools.png) did not establish the required File Search setup. The local UI demonstrates retrieval but is not the requested platform UI. Acceptance of this substitution has not been confirmed. |
+| Screenshot of the sanity check in that platform | [Real local browser capture](img/chat-ui.png) and a [transcript](sanity-check.md) of the exact YouTube question | `img/sanity-check.png` is rendered from CLI output. Neither image is an AI Studio or Playground capture. |
+| Number of chunks embedded | `chunks_estimated=942` for the first 398-document upload | Calculated locally from the configured 400-token window and 50-token overlap. It is not a provider-reported count, so exact compliance with this metric is unverified. |
 
-## Part 1 - evidence (all under `docs/logs/`, `docs/sanity-check.md`)
-- First full sync: 398 articles, 942 estimated chunks, 0 failures, 14m34s with 4 upload workers.
-- A second run, a Docker run with only `API_KEY`, and a Cloud Run execution all report `skipped=398`, exit 0.
-- Live delta test: a deleted document is re-added (`added=1`); a changed article is replaced and exactly one copy remains (`updated=1`).
-- Answers: five bullets and model-written `Article URL:` lines for two in-scope questions; an out-of-scope question is refused.
+## Implementation choices and scope
 
-## Part 1 - not proven
-- The run started by the Scheduler's own clock (due 2026-11-07 02:23 UTC). Verified instead: Scheduler -> Cloud Run triggered on demand (`gcloud scheduler jobs run`, execution `kb-sync-fh5cm`, exit 0); the cron expression and next fire time are set and the job is `ENABLED`.
-- The removal path (article unpublished at the source) has been exercised by tests, not against the live store.
-- The ask CLI uses `generate_content`, which the Gemini docs label "Legacy" in favour of the Interactions API; the job itself uses neither.
-- First-sync time depends on `UPLOAD_WORKERS` and Gemini rate limits; 4 workers gave no 429s in this run, which does not bound a busier day.
-- Neither screenshot is an AI Studio or Playground capture; the chat UI is a local test harness (localhost only, no auth) and is not deployed.
-- Answer format is model behaviour: with the verbatim prompt the model sometimes writes markdown links or numbered steps instead of `Article URL:` lines. The app guarantees the lines by appending retrieved sources when the prefix is absent (found and fixed during the UI test); the raw model text is not constrained.
+- **Provider:** Gemini File Search handles indexing and retrieval. `gemini-3.6-flash` was used for the recorded answers after the attempted `gemini-3.8-flash` calls returned 503/504 errors. The brief does not require a particular Gemini model.
+- **Daily hosting:** Cloud Run Jobs and Cloud Scheduler on GCP, which is explicitly allowed by the brief. Deployment requires a billing-enabled project. Free-tier allowances are not a guarantee of zero cost.
+- **State:** article IDs and content hashes live in remote document metadata. The scheduled container needs no persistent volume or separate database.
+- **Replacement safety:** upload and index the replacement before deleting the old document. Failed uploads leave the old copy available.
+- **Extra deletion behavior:** documents missing from the source are removed, with a per-run budget of the greater of five articles or 20% of remote article IDs. This limits a large accidental deletion, but it does not prove that a smaller source omission is intentional.
+- **Content omitted:** article images and alt text. Headings, relative links and code blocks remain. YouTube and Vimeo embeds become plain video links.
+- **Local demo only:** the chat UI has no authentication and is not publicly deployed. A hosted chat product was not built.
+
+## Recorded runtime evidence
+
+| Scenario | Observed result | Evidence |
+|---|---|---|
+| First full API upload | 398 articles, 942 estimated chunks, zero failures, 14m34s with four upload workers | [Full sync](logs/2026-11-06-first-full-sync-local.log) |
+| Container with only `API_KEY` | 398 skipped, no upload needed | [Docker run](logs/2026-11-06-docker-run-local.log) |
+| Controlled live delta | Missing document re-added, modified document replaced, one final copy, original content restored | [Delta test](logs/2026-11-06-live-delta-test.log) |
+| Daily clock trigger | Scheduled for 2026-11-07 02:23 UTC, Scheduler received HTTP 200 | [Scheduler events](logs/2026-11-07-scheduler-clock.json) |
+| Scheduled job completion | `added=0 updated=2 skipped=394 removed=2 failed=0`, exit 0 | [Cloud Run kb-sync-x4b7h](logs/2026-11-07T065056Z-kb-sync-x4b7h.log) |
+| Answers | Two in-scope answers with article citations and one out-of-scope refusal | [Transcript](sanity-check.md) |
+
+The source changed between runs: the first run fetched 398 articles, while the scheduled run fetched 396. These are dated observations, not a fixed corpus-size promise. The scheduled run now provides live evidence for removal, which was previously covered only by tests.
+
+## Remaining limitations and pre-submission checks
+
+- The repository does not record the required warm-up conversation with the original OptiBot. Do not mark this complete based only on trial portal access.
+- The system prompt is passed verbatim, but answer formatting remains model behavior. The app appends missing retrieved article URLs. It does not enforce a global maximum of five bullets or three URL lines across arbitrary model output. In the 7 Nov live smoke, the correct URL appeared on the line after `Article URL:`, not on that same line.
+- The three recorded answers are examples, not proof that the model always refuses unsupported questions or never hallucinates.
+- Sync duration and success depend on source availability, API quotas and rate limits. The first-run duration is an observation, not a performance guarantee.
+- The clock-triggered execution used the deployed job image. Later local documentation and demo changes are not evidence that the cloud image was redeployed.
+- Confirm that the evaluator can access the private GitHub repository before sending it. GCP access is not needed to read the committed logs.
+- Never send API keys with the submission. A clean repository scan does not establish that a key shared outside Git has been rotated.
 
 ## Process notes
-- Commit `9ab0f9f` also removes the superseded upload CLI because two git commands ran in parallel; every later commit is one change.
-- A Gemini API key created by the assistant in a suspended project was deleted immediately; the key in use was supplied by the author, lives in `.env` and Secret Manager, and was checked absent from all tracked files and git history.
+
+- Commit `9ab0f9f` also removed a superseded upload CLI because two Git commands were issued in parallel. This is disclosed rather than described as a perfectly isolated history.
+- Credentials are read from local environment configuration and Secret Manager. `.env` and generated source articles are excluded from version control.
+- The brief's time budget is approximately eight focused hours. The planning estimates are not a measured time log, so no claim of actual completion within that budget is made.

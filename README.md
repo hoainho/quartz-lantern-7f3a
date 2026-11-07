@@ -1,49 +1,52 @@
-# Support-article sync job
+# Support Knowledge Sync
 
-Scrapes a Zendesk Help Center, converts articles to clean Markdown, and keeps a
-Gemini File Search store in sync once per day. Only new or changed articles are
-uploaded; articles removed at the source are deleted.
+A Python job that turns the OptiSigns Help Center into a Gemini File Search knowledge base, syncs changes daily and answers questions with article citations.
 
-> Part 1 is deployed and verified; deviations and open items: [docs/SUBMISSION_NOTE.md](docs/SUBMISSION_NOTE.md). Plan: [docs/PLAN.md](docs/PLAN.md), checklist: [docs/CHECKLIST.md](docs/CHECKLIST.md), decisions: [docs/DECISIONS.md](docs/DECISIONS.md).
+**Flow:** Zendesk API → Markdown → File Search → cited answers.
 
-## Setup
+## Quick start
+
+Requires **Python 3.12** and a Gemini API key with File Search access. From the cloned repository root:
+
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
-cp .env.sample .env      # set GEMINI_API_KEY (or API_KEY); everything else has a default
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+cp .env.sample .env
 ```
 
-## Run locally
+Set `GEMINI_API_KEY` in `.env` (`API_KEY` also works). Never commit it. API calls may incur charges.
+
 ```bash
-.venv/bin/python -m kbsync.scrape                  # Markdown only -> data/articles/ (no API key needed)
-.venv/bin/python main.py                           # scrape + sync delta; exits 0 on success
-.venv/bin/python -m kbsync.ask "How do I add a YouTube video?"   # sanity check against the synced store
-.venv/bin/python -m kbsync.web                     # chat UI on http://127.0.0.1:8080 (localhost only)
-.venv/bin/python -m pytest                         # tests
-docker build -t sync-job . && docker run --rm -e API_KEY=... sync-job
+.venv/bin/python main.py
+.venv/bin/python -m kbsync.ask "How do I add a YouTube video?"
+.venv/bin/python -m pytest -q
 ```
-Each run logs `sync done added=N updated=N skipped=N removed=N failed=N chunks_estimated=M`.
 
-## How it works
-- **Scrape**: public Zendesk API, paginated, drafts skipped; fewer than `MIN_ARTICLES` aborts the run before anything is written or deleted.
-- **Markdown**: HTML cleaned (scripts, images, in-page TOC removed; headings, lists, relative links, fenced code and tables kept; YouTube embeds become `Video:` links). File: `<id>-<slug>.md` with front-matter (`title`, `url`, `article_id`, `updated_at`, `content_hash`).
-- **Delta**: identity is the article id, change signal is a SHA-256 of title + body. Sync state lives in each document's `custom_metadata` on the store, so the container needs no disk or database. A changed article is uploaded first and its old copy deleted afterwards.
-- **Store**: found by display name `support-articles` (created if missing), so a fresh container reuses yesterday's store.
+The job creates or reuses `support-articles`, writes Markdown to `data/articles/`, and exits **0** on success or **1** on failure. An unchanged rerun reports `added=0 updated=0 skipped=N`.
 
-## Chunking strategy
-Whitespace chunking, 400 tokens per chunk with 50 overlap. Articles are short step lists: chunks this size keep a heading with its steps, and a small overlap keeps a step that straddles a boundary retrievable without inflating storage (the quota counts roughly 3x the input). The API reports no chunk count, so `chunks_estimated` replays the same window locally.
+## Docker and demo
 
-## Daily job (GCP Cloud Run Job + Cloud Scheduler)
-Deployed with `deploy/gcp/deploy.sh` (project `kbsync-7f3a`, `us-central1`): Cloud Build image, Cloud Run Job `kb-sync` with the key mounted from Secret Manager as `API_KEY`, Cloud Scheduler `kb-sync-daily` at **02:23 UTC every day** (next run 2026-11-07 02:23 UTC).
+```bash
+docker build -t sync-job .
+docker run --rm --env-file .env sync-job
+```
 
-Run artefacts (readable without a GCP login), each ending in exit 0:
-- [Cloud Run execution `kb-sync-9m6vc`](docs/logs/2026-11-06T094051Z-kb-sync-9m6vc.log): `added=0 updated=0 skipped=398 removed=0 failed=0`
-- [Cloud Scheduler-triggered execution `kb-sync-fh5cm`](docs/logs/2026-11-06T113350Z-kb-sync-fh5cm.log): started via the Scheduler, `skipped=398`, exit 0
-- [First full sync, local](docs/logs/2026-11-06-first-full-sync-local.log): `added=398 failed=0 chunks_estimated=942` in 14m34s (4 upload workers)
-- [Docker run with only `API_KEY`](docs/logs/2026-11-06-docker-run-local.log): `skipped=398`
+Runs once, without a volume. Also accepts `-e API_KEY=...`. For a key-free scrape: `.venv/bin/python -m kbsync.scrape`. For the local UI: `.venv/bin/python -m kbsync.web`, then http://127.0.0.1:8080. The UI is unauthenticated and local only.
 
-Refresh the artefact after any run: `PROJECT_ID=kbsync-7f3a deploy/gcp/logs.sh`.
+## Design
 
-## Sample answer
-Local chat UI (`python -m kbsync.web`, then open http://127.0.0.1:8080): "How do I add a YouTube video?" returns five bullets and `Article URL:` lines, with the retrieved articles listed underneath. The brief's OpenAI Assistants Playground no longer exists, so the UI and the CLI query the same File Search store. More answers and an out-of-scope refusal: [transcript](docs/sanity-check.md).
+Headings, relative links and code blocks are preserved. Article IDs and SHA-256 hashes drive delta sync. Remote metadata holds state. Replacements are indexed before old copies are deleted. Source removals have a deletion budget.
 
-![chat UI answering with cited URLs](docs/img/chat-ui.png)
+Chunking: **400 whitespace tokens, 50 overlap**, to retain short instructions and boundary context. `chunks_estimated` is a local estimate, **not a provider-reported count**. [Decisions](docs/DECISIONS.md).
+
+## Deployment and evidence
+
+Cloud Scheduler → Cloud Run at **02:23 UTC daily**, project `kbsync-7f3a`, `us-central1`. Secrets use Secret Manager. [Deploy](deploy/gcp/deploy.sh).
+
+- [First upload](docs/logs/2026-11-06-first-full-sync-local.log): 398 articles, 942 estimated chunks, zero failures.
+- [7 Nov scheduled run](docs/logs/2026-11-07T065056Z-kb-sync-x4b7h.log): 2 updated, 394 skipped, 2 removed, exit 0. [Trigger](docs/logs/2026-11-07-scheduler-clock.json).
+- [Checklist](docs/CHECKLIST.md) · [CI](https://github.com/hoainho/quartz-lantern-7f3a/actions/workflows/tests.yml) · [Deviations](docs/SUBMISSION_NOTE.md) · [Answer transcript](docs/sanity-check.md).
+
+**Screenshot:** real local UI, **not AI Studio**. This substitution and the estimated chunk count remain deviations. Click to enlarge.
+
+<a href="docs/img/chat-ui.png"><img src="docs/img/chat-ui.png" width="180" alt="Local assistant answering the YouTube question with article citations"></a>

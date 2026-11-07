@@ -1,5 +1,7 @@
 # Part 1 sprint plan (budget: ~8h)
 
+This is the historical implementation plan, not the final acceptance record. See [CHECKLIST.md](CHECKLIST.md) for current evidence and [SUBMISSION_NOTE.md](SUBMISSION_NOTE.md) for deviations. The estimates below total 8.5 hours and are not a measured time log.
+
 Every sprint ends with a working, committed increment and an observable
 "Done when". Time-box is a ceiling; if a sprint overruns, cut scope from the
 bottom of the "Cut order" list, never the graded core.
@@ -11,7 +13,7 @@ bottom of the "Cut order" list, never the graded core.
 | 2 | Gemini File Search upload via API + sanity check | 2h | Log shows `files=N chunks_estimated=M`; sanity question answered with `Article URL:` citations; screenshot saved |
 | 3 | Delta detection, `main.py`, Docker | 2h | Run 1 -> `added=N`; run 2 -> `added=0 updated=0 skipped=N`; `docker run` exits 0 |
 | 4 | Deploy as daily cloud job | 1.5h | One real scheduled/triggered run on the cloud with counts in logs; link or artefact saved |
-| 5 | README (<= 1 page), tests, cleanup | 1h (inside budget) | README complete; `pytest` green; no secrets in history |
+| 5 | README (<= 1 page), tests, cleanup | 1h | README complete; `pytest` green; no secrets in history |
 
 ## Sprint detail
 
@@ -23,9 +25,9 @@ bottom of the "Cut order" list, never the graded core.
 
 ### Sprint 1 - Scrape to Markdown (25 pts)
 - [x] Zendesk client with pagination, retries, draft filtering (398 published articles live)
-- [ ] HTML -> Markdown: BeautifulSoup pre-clean + markdownify; drop scripts/styles/images, unwrap spans, remove in-article TOC (fragment-only link lists), iframe embeds -> link line, fenced code, tables, relative links preserved
-- [ ] File name `<id>-<slug>.md`; front-matter `title`, `url`, `updated_at`, `content_hash` (sha256 of title + Markdown body, excludes volatile fields)
-- [ ] Scrape CLI writing all articles to `DATA_DIR`; spot-check 5 files
+- [x] HTML -> Markdown conversion, with [preservation and cleaning tests](../tests/test_convert.py).
+- [x] `<id>-<slug>.md` file names and content hashes, with [document tests](../tests/test_document.py).
+- [x] Scrape CLI wrote 398 articles in the [first live run](logs/2026-11-06-first-full-sync-local.log).
 
 ### Sprint 2 - Gemini File Search upload (20 pts)
 - Create/reuse a File Search store; upload each file via API with `custom_metadata` and whitespace chunking (DECISIONS D3, D4).

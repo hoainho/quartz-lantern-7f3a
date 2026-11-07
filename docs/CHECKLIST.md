@@ -1,48 +1,68 @@
-# Requirement traceability (Part 1)
+# Part 1 requirement traceability
 
-Source: the assignment PDF. Pass bar: 70 pts = Scrape 25 + Upload 20 + Job 15 + Code/README 10.
-Tick an item only when it is verified and the evidence is linked.
+Reviewed against the original assignment on 2026-11-07. The rubric totals 70 core points: scrape 25, API upload 20, daily job 15, code and README 10. Tests offer 5 bonus points. These are rubric weights, not points awarded by this review.
+
+Checked means the stated behavior has evidence. Unchecked means an exact requirement is still unmet or unverified. A documented substitute is not the same as full compliance.
+
+| Graded area | Weight | Evidence and remaining qualification |
+|---|---:|---|
+| Scrape and clean quality | 25 | 398 articles in the first live run, Markdown conversion and file output. Headings, relative links and fenced code covered by tests. |
+| API-based vector-store upload | 20 | 398 documents uploaded through Gemini File Search, with operation polling and a cited answer. UI setup/sanity check and exact embedded chunk counts remain deviations. |
+| Daily job deployment and logs | 15 | Daily Scheduler trigger and completed Cloud Run execution recorded on 7 Nov. Updates, skips and removals observed against the live store. |
+| Code clarity and README | 10 | Small typed Python modules, reproducible setup, Docker commands, chunking explanation, logs and screenshot. Final scoring remains the evaluator's judgment. |
+| Tests | +5 | Offline unit and pipeline tests plus GitHub Actions. This does not replace live integration evidence. |
 
 ## 0. Warm-up
-- [ ] Trial account created; chatted with the reference bot
-- [x] Gemini API key (stored only in local `.env` and Secret Manager; tracked files and logs scanned: no key)
 
-## 1. Scrape -> Markdown (25)
-- [x] >= 30 articles pulled from the Help Center (Zendesk API) - 398 published articles fetched live (4 pages)
-- [x] Each article converted to clean Markdown - 17 unit tests; 398 files, avg ~4.7k chars, none under 400 chars, all with front-matter
-- [x] One file per article (`<id>-<slug>.md`) - `python -m kbsync.scrape` wrote 398 files (2.6 MB)
-- [x] Relative links, code blocks, headings preserved - verified in sampled files (fenced GraphQL query, 10 links, 5-6 headings per article)
-- [x] Nav / ads / scripts removed - no TOC lists or fragment links left; only 2 files contain `<iframe>` and both are inside code samples
-- [x] Spot-check of 5 random files (seed 7): powerpoint-transition, guardian-news-app, get-started-api, move-screen-to-other-team, feeds
+- [ ] Record the required conversation with the original OptiBot. The Part 1 repository does not contain evidence of this step. Trial portal use alone does not prove it.
+- [x] Gemini platform credentials work: the [first upload](logs/2026-11-06-first-full-sync-local.log) and [answer transcript](sanity-check.md) exercise the service.
 
-## 2. Assistant + vector store (20)
-- [x] System prompt used **verbatim** (`prompts/system_prompt.txt`) - file matches the PDF, asserted in tests, passed as system instruction by `kbsync.ask` in the live answers
-- [x] Markdown uploaded to the Gemini File Search store **via Python script / API** (no UI) - 398 files by `main.py` ([first sync](logs/2026-11-06-first-full-sync-local.log))
-- [x] Chunking strategy chosen and explained in README - whitespace, 400 tokens / 50 overlap (DECISIONS D4)
-- [x] Log shows number of files and chunks embedded - `added=398 ... chunks_estimated=942` (chunks estimated locally, DECISIONS D5; the API reports none)
-- [x] Sanity check "How do I add a YouTube video?" answered correctly with citations - five bullets + `Article URL:` ([sanity-check.md](sanity-check.md))
-- [x] Screenshot saved in `docs/img/` - `docs/img/sanity-check.png`
+## 1. Scrape to Markdown
 
-## 3. Daily job (15)
-- [x] `main.py` wraps scrape + upload - `kbsync.job.run`, exit 0 clean / 1 on any failure
-- [x] `Dockerfile`; `docker run -e API_KEY=... ` runs once and exits 0 - [docker run log](logs/2026-11-06-docker-run-local.log): skipped=398, exit 0; image 198 MB, non-root
-- [x] Re-scrape, detect new/updated (hash), upload delta only - live: second run `skipped=398`; deleted doc gives `added=1`; tampered doc gives `updated=1` with one copy left ([live delta log](logs/2026-11-06-live-delta-test.log)); removal path proven offline only
-- [x] Logs counts: added / updated / skipped - `sync done added=398 updated=0 skipped=0 removed=0 failed=0 chunks_estimated=942` ([first sync](logs/2026-11-06-first-full-sync-local.log))
-- [x] Scheduled once per day on a cloud platform - GCP Cloud Scheduler `kb-sync-daily` (02:23 UTC) -> Cloud Run Job `kb-sync`, deployed by `deploy/gcp/deploy.sh`; manual execution `kb-sync-9m6vc` succeeded; first scheduled run is 2026-11-07 02:23 UTC (not yet observed)
-- [x] Link to job logs or last-run artefact in README - three artefacts under `docs/logs/`
+- [x] Fetch at least 30 articles from `support.optisigns.com`: [first run](logs/2026-11-06-first-full-sync-local.log), 398 articles across four API pages.
+- [x] Save one Markdown file per article using `<id>-<slug>.md`: [scraper](../kbsync/scrape.py), [document construction](../kbsync/document.py), [pipeline test](../tests/test_pipeline.py).
+- [x] Preserve headings, relative links and code blocks: [conversion tests](../tests/test_convert.py).
+- [x] Remove navigation and noise: API article bodies exclude page chrome, while the [converter](../kbsync/convert.py) removes scripts, styles and in-page navigation. Images are intentionally omitted.
+- [x] Local file output mirrors the fetched set, including stale-file removal: [pipeline test](../tests/test_pipeline.py).
 
-## Deliverables
-- [x] GitHub repo with cryptic name (no brand in name), clear commits - private repo `quartz-lantern-7f3a`, Conventional Commits (one exception: `9ab0f9f` also removes the superseded upload CLI)
-- [x] No hard-coded keys; `.env.sample` complete - tracked-file and history scan found only `API_KEY=...` placeholders; `.env` untracked
-- [x] README <= 1 page: setup, local run, job-logs link, screenshot - 47 lines with links to three run logs and the screenshot
-- [x] Screenshot of assistant answering with cited URLs - `docs/img/sanity-check.png` (rendered from the unedited CLI output; `docs/sanity-check.md`)
+## 2. Assistant and API upload
 
-## Code clarity + README (10)
-- [ ] Modules small and single-purpose; type hints; docstrings where non-obvious (author's judgement)
-- [x] README accurate against actual behaviour - every command in "Run locally" was run (scrape, main.py, ask, pytest, docker run)
+- [x] Use the [system prompt](../prompts/system_prompt.txt) verbatim as the model's system instruction: [assistant implementation](../kbsync/ask.py).
+- [x] Upload Markdown through Python and the API, not drag and drop: [provider adapter](../kbsync/gemini_store.py), [398-document upload log](logs/2026-11-06-first-full-sync-local.log).
+- [x] Configure and explain chunking: 400 whitespace tokens, 50 overlap. See [README](../README.md#design) and [D4](DECISIONS.md#d4---chunking-whitespace-config-accepted).
+- [x] Log successful file counts and explicitly labelled local chunk estimates: `added=398`, `chunks_estimated=942`.
+- [ ] Report the provider's actual number of embedded chunks. The implementation does not obtain this metric. A local estimate is supplied instead.
+- [x] Answer the exact YouTube sanity question with citations: [live transcript](sanity-check.md) and [local UI screenshot](img/chat-ui.png).
+- [ ] Create and test the assistant in AI Studio or Playground as requested. The implementation uses the API and a local UI instead. [Explanation](SUBMISSION_NOTE.md).
 
-## Bonus (+5)
-- [x] Unit tests (slug/hash, cleaning, delta classification) pass - 65 tests locally and green on GitHub Actions (`.github/workflows/tests.yml`)
+## 3. Daily cloud job
 
-## Submission note
-- [ ] State what was cut and why (assignment asks for this)
+- [x] `main.py` wraps scrape and upload, exits 0 on success and 1 on failure: [job](../kbsync/job.py), [job tests](../tests/test_job.py).
+- [x] Docker runs once using only an API key: [Dockerfile](../Dockerfile), [recorded container run](logs/2026-11-06-docker-run-local.log).
+- [x] Re-scrape, compare article IDs and content hashes, and upload only the delta: [live delta test](logs/2026-11-06-live-delta-test.log).
+- [x] Run daily on public cloud infrastructure: `23 2 * * *`, `Etc/UTC`, enabled Cloud Scheduler job `kb-sync-daily` targeting Cloud Run job `kb-sync`.
+- [x] Observe the clock-triggered run, not just a manual launch: [Scheduler events](logs/2026-11-07-scheduler-clock.json), scheduled time `2026-11-07T02:23:02.36798Z`, HTTP 200.
+- [x] Observe downstream completion and counts: [execution kb-sync-x4b7h](logs/2026-11-07T065056Z-kb-sync-x4b7h.log), `added=0 updated=2 skipped=394 removed=2 failed=0`, container exit 0.
+- [x] Provide readable log artefacts through the README without requiring GCP access.
+
+## 4. Code, README and deliverables
+
+- [x] Cryptic GitHub repository name: `quartz-lantern-7f3a`, not a brand-based name.
+- [x] Conventional Commits and focused modules. The earlier mixed commit is disclosed in [submission notes](SUBMISSION_NOTE.md#process-notes).
+- [x] Environment-driven credentials and an [.env.sample](../.env.sample). `.env` and generated article data are excluded from version control.
+- [x] README includes prerequisites, setup, local run, expected rerun result, Docker usage, chunking, job logs and an assistant screenshot.
+- [x] Separate responsibilities: Zendesk retrieval, HTML conversion, document identity, delta classification, provider operations and job orchestration. See [kbsync](../kbsync).
+- [x] Explain substitutions, omissions and unproven behavior in [submission notes](SUBMISSION_NOTE.md).
+- [ ] Confirm reviewer access to the private repository before emailing the submission.
+
+## 5. Bonus tests and verification
+
+- [x] Tests cover Markdown preservation, slug/hash behavior, delta classification, failed uploads, deletion guards and repeated-run pipeline state.
+- [x] [GitHub Actions run 42331256011](https://github.com/hoainho/quartz-lantern-7f3a/actions/runs/42331256011) succeeded for code commit `4bf7c4a`. The [workflow](../.github/workflows/tests.yml) uses Python 3.12 and `python -m pytest -q`.
+- [x] Fresh-environment review on 2026-11-07: Python 3.12.15, dependencies installed from `requirements-dev.txt`, `python -m pytest -q` reported **80 passed in 1.39s**.
+- [x] Live README smoke: `main.py` exited 0 with `added=0 updated=0 skipped=396 removed=0 failed=0`. The exact YouTube question returned five factual bullets and the correct support article citation. In this response the URL followed the `Article URL:` label on the next line.
+- [x] README print check: 328 words, one A4 page at 10.5pt body text with 12mm margins and a linked thumbnail. Visual inspection found no clipping. The thumbnail was opened in a browser and loaded the full 1125 × 1356 image. Pagination depends on the renderer and print settings.
+- [x] Credential-pattern scan of tracked files, new evidence and Git history found no Google API key, GitHub token or private-key patterns. This is a bounded pattern scan, not a proof that every possible secret is absent.
+- Fresh Docker build/run was not repeated: the installed Docker client's daemon socket refused connections. The linked successful container run remains historical evidence, not a new result.
+
+This checklist records coverage, not a guarantee of 70/70. The exact UI workflow, actual embedded chunk metric, warm-up evidence and recipient access must not be presented as already satisfied.
