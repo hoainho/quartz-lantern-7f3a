@@ -1,0 +1,47 @@
+[
+  {
+    "insertId": "15mxi4tf2ph1is",
+    "jsonPayload": {
+      "@type": "type.googleapis.com/google.cloud.scheduler.logging.AttemptStarted",
+      "jobName": "projects/kbsync-7f3a/locations/us-central1/jobs/kb-sync-daily",
+      "scheduledTime": "2026-11-07T02:23:02.36798Z",
+      "targetType": "HTTP",
+      "url": "https://run.googleapis.com/v2/projects/kbsync-7f3a/locations/us-central1/jobs/kb-sync:run"
+    },
+    "logName": "projects/kbsync-7f3a/logs/cloudscheduler.googleapis.com%2Fexecutions",
+    "receiveTimestamp": "2026-11-07T02:23:08.733085937Z",
+    "resource": {
+      "labels": {
+        "job_id": "kb-sync-daily",
+        "location": "us-central1",
+        "project_id": "kbsync-7f3a"
+      },
+      "type": "cloud_scheduler_job"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-11-07T02:23:08.733085937Z"
+  },
+  {
+    "httpRequest": { "status": 200 },
+    "insertId": "1f32qfjfgypn2n",
+    "jsonPayload": {
+      "@type": "type.googleapis.com/google.cloud.scheduler.logging.AttemptFinished",
+      "debugInfo": "URL_CRAWLED. Original HTTP response code number = 200",
+      "jobName": "projects/kbsync-7f3a/locations/us-central1/jobs/kb-sync-daily",
+      "targetType": "HTTP",
+      "url": "https://run.googleapis.com/v2/projects/kbsync-7f3a/locations/us-central1/jobs/kb-sync:run"
+    },
+    "logName": "projects/kbsync-7f3a/logs/cloudscheduler.googleapis.com%2Fexecutions",
+    "receiveTimestamp": "2026-11-07T02:23:09.303091209Z",
+    "resource": {
+      "labels": {
+        "job_id": "kb-sync-daily",
+        "location": "us-central1",
+        "project_id": "kbsync-7f3a"
+      },
+      "type": "cloud_scheduler_job"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-11-07T02:23:09.303091209Z"
+  }
+]
