@@ -32,7 +32,7 @@ Tick an item only when it is verified and the evidence is linked.
 - [x] Link to job logs or last-run artefact in README - three artefacts under `docs/logs/`
 
 ## Deliverables
-- [x] GitHub repo with cryptic name (no brand in name), clear commits - private repo `quartz-lantern-7f3a`, Conventional Commits (one exception: `02b3d06` also removes the superseded upload CLI)
+- [x] GitHub repo with cryptic name (no brand in name), clear commits - private repo `quartz-lantern-7f3a`, Conventional Commits (one exception: `9ab0f9f` also removes the superseded upload CLI)
 - [x] No hard-coded keys; `.env.sample` complete - tracked-file and history scan found only `API_KEY=...` placeholders; `.env` untracked
 - [x] README <= 1 page: setup, local run, job-logs link, screenshot - 47 lines with links to three run logs and the screenshot
 - [x] Screenshot of assistant answering with cited URLs - `docs/img/sanity-check.png` (rendered from the unedited CLI output; `docs/sanity-check.md`)

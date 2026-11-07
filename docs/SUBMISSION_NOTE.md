@@ -28,5 +28,5 @@ The assignment asks candidates to say what they cut. Updated 2026-11-06 after th
 - Answer format is model behaviour: with the verbatim prompt the model sometimes writes markdown links or numbered steps instead of `Article URL:` lines. The app guarantees the lines by appending retrieved sources when the prefix is absent (found and fixed during the UI test); the raw model text is not constrained.
 
 ## Process notes
-- Commit `02b3d06` also removes the superseded upload CLI because two git commands ran in parallel; every later commit is one change.
+- Commit `9ab0f9f` also removes the superseded upload CLI because two git commands ran in parallel; every later commit is one change.
 - A Gemini API key created by the assistant in a suspended project was deleted immediately; the key in use was supplied by the author, lives in `.env` and Secret Manager, and was checked absent from all tracked files and git history.
