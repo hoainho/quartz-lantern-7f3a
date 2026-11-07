@@ -63,5 +63,5 @@ These additions follow the original implementation; they do not change the histo
 - [x] Responsive local chat, an in-flow composer, readable citations and explicit Part 1 demo identity.
 - [x] Reduced-motion-aware loading skeletons and real Gemini File Search streaming, with sanitized failures and interrupted-stream recovery.
 - [x] Offline regressions and browser viewport/interaction checks; see [CHECKLIST.md](CHECKLIST.md).
-- [ ] Record 7–10 real questions in the user's Chrome, showing each question being typed before submission.
-  - Blocked: the completed capture failed during encoder finalization. A live-encoding replacement was verified, but provider quota/availability now prevents a fresh complete take. The [seven-answer transcript](logs/2026-11-07-chrome-seven-questions.json) is retained and explicitly distinguished from a video.
+- [x] Record 7–10 real questions in the user's Chrome, showing each question being typed before submission.
+  - Completed seven questions with Gemini 3.1 Flash-Lite and live capture segments. [Full MP4](media/part1-demo.mp4), [condensed looping GIF](media/part1-demo.gif) and [actual transcript](logs/2026-11-07-recorded-demo.json). Technical recording pauses are omitted; the GIF additionally removes API waits and speeds up playback.

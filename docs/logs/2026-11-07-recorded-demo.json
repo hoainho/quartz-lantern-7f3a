@@ -1,0 +1,221 @@
+{
+  "target": "http://127.0.0.1:18080/",
+  "browser": "Actual user Chrome via relay",
+  "model": "gemini-3.1-flash-lite",
+  "modelOverride": "Recording process only; default unchanged",
+  "capture": "One real seven-question conversation recorded in live segments; technical capture pauses omitted. Native typing with compositor repaint; no response replay.",
+  "turns": [
+    {
+      "number": 1,
+      "question": "How do I add a YouTube video?",
+      "typingStartSeconds": 1.201,
+      "typingEndSeconds": 3.879,
+      "sentSeconds": 4.58,
+      "completedSeconds": 65.469,
+      "result": {
+        "count": 1,
+        "sources": [
+          {
+            "title": "How to Use YouTube with OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360051014713"
+          },
+          {
+            "title": "How to Use YouTube with OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo add a single YouTube video to your OptiSigns account, follow these steps:\n\nCreate the App: In the OptiSigns portal, go to Files/Assets > Apps and select the YouTube app.\nConfigure Settings: Enter a name for your asset and paste the URL of your YouTube video, Short, or share link into the URL field.\nCustomize Options: Use the Display options (e.g., Mute, Captions) and Playback Options (e.g., Start/End times) as needed, then click Save.\nDeploy to Screen: Navigate to the Screens tab, click Edit next to your screen, select Asset as the content type, and choose your newly created YouTube app from the list.\n\nFor more details on display and playback settings, see: How to Use YouTube with OptiSigns.\n\nSources\nHow to Use YouTube with OptiSigns\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns"
+      },
+      "segment": 1
+    },
+    {
+      "number": 2,
+      "segment": 2,
+      "question": "How do I upload an image?",
+      "typingStartSeconds": 0,
+      "typingEndSeconds": 5.495,
+      "sentSeconds": 6.096,
+      "completedSeconds": 14.189,
+      "result": {
+        "count": 2,
+        "sources": [
+          {
+            "title": "AssetManagement",
+            "url": "https://app.optisigns.com/app/assetManagement"
+          },
+          {
+            "title": "How to Best Use Canva with OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/1500005888781-How-to-Best-Use-Canva-with-OptiSigns"
+          },
+          {
+            "title": "How to Upload Manage Your Files Assets",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016247974-How-to-Upload-Manage-Your-Files-Assets"
+          },
+          {
+            "title": "How to Use the Guardian News App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360044613874-How-to-Use-the-Guardian-News-App"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo upload an image to OptiSigns, follow these steps:\n\nNavigate to your Files/Assets Page.\nYou can drag and drop files directly from your computer's File Explorer or Finder into the portal.\nAlternatively, you can connect and upload files from services like Google Drive, Dropbox, or OneDrive.\nOnce uploaded, the image becomes an asset that can be assigned to a screen or added to a playlist.\nYou can manage and edit your uploaded assets at any time via the Files/Assets tab.\nSources\nAssetManagement\nArticle URL: https://app.optisigns.com/app/assetManagement\nHow to Best Use Canva with OptiSigns\nArticle URL: https://support.optisigns.com/hc/en-us/articles/1500005888781-How-to-Best-Use-Canva-with-OptiSigns\nHow to Upload Manage Your Files Assets\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016247974-How-to-Upload-Manage-Your-Files-Assets\nHow to Use the Guardian News App\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360044613874-How-to-Use-the-Guardian-News-App"
+      }
+    },
+    {
+      "number": 3,
+      "segment": 2,
+      "question": "How do I create a playlist?",
+      "typingStartSeconds": 18.195,
+      "typingEndSeconds": 24.369,
+      "sentSeconds": 24.97,
+      "completedSeconds": 74.187,
+      "result": {
+        "count": 3,
+        "sources": [
+          {
+            "title": "How to Create Use Playlists",
+            "url": "https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists"
+          },
+          {
+            "title": "How to Manage and Edit Your Playlist Settings",
+            "url": "https://support.optisigns.com/hc/en-us/articles/28295074995859-How-to-Manage-and-Edit-Your-Playlist-Settings"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo create a playlist in OptiSigns, follow these steps:\n\nNavigate: Click on the \"Playlist\" tab in the top navigation bar and select \"Create Playlist\".\nName: Provide a name for your playlist when prompted (or use the pencil icon to edit it).\nAdd Content: Drag and drop your desired videos, images, or other assets into the playlist.\nAdjust Settings: You can click the item duration to change how long it plays. You can also access advanced settings (like shuffle, transitions, and screen tagging) via the playlist settings.\nPublish: Once ready, click the \"Push to Screens\" icon to assign the playlist to your screens or schedule it for later.\n\nFor more details on managing your playlists, see the full articles below:\n\nSources\nHow to Create Use Playlists\nArticle URL: https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists\nHow to Manage and Edit Your Playlist Settings\nArticle URL: https://support.optisigns.com/hc/en-us/articles/28295074995859-How-to-Manage-and-Edit-Your-Playlist-Settings"
+      }
+    },
+    {
+      "number": 4,
+      "segment": 3,
+      "question": "How do I pair a new screen?",
+      "typingStartSeconds": 0,
+      "typingEndSeconds": 6.082,
+      "sentSeconds": 6.682,
+      "completedSeconds": 80.08,
+      "result": {
+        "count": 4,
+        "sources": [
+          {
+            "title": "optisigns.com/download",
+            "url": "https://www.optisigns.com/download"
+          },
+          {
+            "title": "app.optisigns.com",
+            "url": "https://app.optisigns.com/"
+          },
+          {
+            "title": "Set Up Add or Unpair a Screen",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen"
+          },
+          {
+            "title": "BrightSign Players",
+            "url": "https://support.optisigns.com/hc/en-us/articles/5090125683219-BrightSign-Players"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo pair a new screen with your OptiSigns account, follow these steps:\n\nInstall the App: Download and install the OptiSigns app on your player device from optisigns.com/download.\nLaunch & Get Code: Open the app on your device; it will display a unique pairing code.\nSign In: Log in to your OptiSigns account at app.optisigns.com.\nAdd Screen: Navigate to the Screens page and click Add Screen.\nPair: Enter the pairing code from your device into the portal and click Pair.\n\nTip: Pairing codes are case-sensitive. If your player displays lowercase letters, ensure you select the Use lowercase pairing code option in the portal before entering the code.\n\nSources\nSet Up Add or Unpair a Screen\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen\nBrightSign Players\nArticle URL: https://support.optisigns.com/hc/en-us/articles/5090125683219-BrightSign-Players"
+      }
+    },
+    {
+      "number": 5,
+      "segment": 3,
+      "question": "How do I rotate a screen to portrait?",
+      "typingStartSeconds": 84.089,
+      "typingEndSeconds": 92.976,
+      "sentSeconds": 93.578,
+      "completedSeconds": 104.673,
+      "result": {
+        "count": 5,
+        "sources": [
+          {
+            "title": "Set Up, Add, or Unpair a Screen",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen"
+          },
+          {
+            "title": "Fixing Unexpected Screen Rotation & Incorrect Orientation",
+            "url": "https://support.optisigns.com/hc/en-us/articles/39488874989587-Fixing-Unexpected-Screen-Rotation-Incorrect-Orientation-with-OptiSigns-Android-Stick"
+          },
+          {
+            "title": "Edit Screen: What Does Each Option Do?",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360048914673-edit-screen-what-does-each-option-do"
+          },
+          {
+            "title": "Set Up Add or Unpair a Screen",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen"
+          },
+          {
+            "title": "Edit Screen What does each option do",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360048914673-Edit-Screen-What-does-each-option-do"
+          },
+          {
+            "title": "Fixing Unexpected Screen Rotation Incorrect Orientation with OptiSigns Android Stick",
+            "url": "https://support.optisigns.com/hc/en-us/articles/39488874989587-Fixing-Unexpected-Screen-Rotation-Incorrect-Orientation-with-OptiSigns-Android-Stick"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo rotate your screen to portrait orientation, you can use either the OptiSigns portal or your device's app menu:\n\nFrom the Portal: Go to the Screens page, click Edit for the desired screen, select the preferred rotation (90 or 270 degrees) under Orientation, and click Save.\nFrom the Device: Open the OptiSigns app side menu on your device, select Rotation, and choose your desired orientation.\n\nFor the best results, ensure your content is designed for portrait mode. If you encounter issues with unexpected rotation, check your TV's native settings to ensure auto-rotation is disabled.\n\nArticle URLs:\n\nSet Up, Add, or Unpair a Screen\nFixing Unexpected Screen Rotation & Incorrect Orientation\nEdit Screen: What Does Each Option Do?\nSources\nSet Up Add or Unpair a Screen\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen\nEdit Screen What does each option do\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360048914673-Edit-Screen-What-does-each-option-do\nFixing Unexpected Screen Rotation Incorrect Orientation with OptiSigns Android Stick\nArticle URL: https://support.optisigns.com/hc/en-us/articles/39488874989587-Fixing-Unexpected-Screen-Rotation-Incorrect-Orientation-with-OptiSigns-Android-Stick"
+      }
+    },
+    {
+      "number": 6,
+      "segment": 4,
+      "question": "How do I display a website?",
+      "result": {
+        "sources": [
+          {
+            "title": "How to Use the Website App and Display URLs",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016382473-How-to-Use-the-Website-App-and-Display-URLs-on-OptiSigns"
+          },
+          {
+            "title": "How to Display Content From Websites That Require a Login",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360037391854-How-to-Display-Content-From-Websites-That-Require-a-Login"
+          },
+          {
+            "title": "How to use Advanced Website App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/5149077938835-How-to-use-Advanced-Website-App"
+          },
+          {
+            "title": "How to Use the Website App and Display URLs on OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016382473-How-to-Use-the-Website-App-and-Display-URLs-on-OptiSigns"
+          },
+          {
+            "title": "How to Display Content From Websites That Require a Login",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360037391854-How-to-Display-Content-From-Websites-That-Require-a-Login"
+          },
+          {
+            "title": "How to Install a Root Certificate and Display an Internal Website on Screens",
+            "url": "https://support.optisigns.com/hc/en-us/articles/35184720136595-How-to-Install-a-Root-Certificate-and-Display-an-Internal-Website-on-Screens"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo display a website on your digital signs, follow these steps using the Website app:\n\nCreate the Asset: In the OptiSigns portal, go to Assets > Add Asset > Apps and select Website.\nConfigure Details: Enter a name for the asset, input the URL you wish to display, and set your preferred refresh interval.\nAssign to Screen: Go to the Screens tab, click the screen you want to use, select Asset as the content type, and then select the website asset you just created.\nSave: Click Save to begin displaying the website on your screen.\n\nImportant Notes:\n\nLogins & Security: If a website requires a login or has specific security requirements, the standard Website app may not work. In these cases, consider using a Dedicated App (if available for that service), Web Scripting, or Secured Dashboard.\nTroubleshooting: If the website does not display correctly, you can try the Advanced Website app as an alternative.\n\nFor more detailed information, please refer to these articles:\n\nHow to Use the Website App and Display URLs\nHow to Display Content From Websites That Require a Login\nHow to use Advanced Website App\nSources\nHow to Use the Website App and Display URLs on OptiSigns\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016382473-How-to-Use-the-Website-App-and-Display-URLs-on-OptiSigns\nHow to Display Content From Websites That Require a Login\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360037391854-How-to-Display-Content-From-Websites-That-Require-a-Login\nHow to Install a Root Certificate and Display an Internal Website on Screens\nArticle URL: https://support.optisigns.com/hc/en-us/articles/35184720136595-How-to-Install-a-Root-Certificate-and-Display-an-Internal-Website-on-Screens"
+      },
+      "timingNote": "Recovered completed response after relay timeout; capture segment retained."
+    },
+    {
+      "number": 7,
+      "segment": 5,
+      "question": "How do I use Split Screen?",
+      "typingStartSeconds": 0,
+      "typingEndSeconds": 7.077,
+      "sentSeconds": 7.678,
+      "completedSeconds": 20.765,
+      "result": {
+        "count": 7,
+        "sources": [
+          {
+            "title": "Article URL: https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App"
+          },
+          {
+            "title": "How to Create and Use the Split Screen App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo use the Split Screen feature in OptiSigns, follow these steps:\n\nCreate the App: Navigate to the Files/Assets tab, click App, and select Split Screen.\nSelect/Customize Layout: Choose a template or create a custom layout by adjusting zone dimensions, adding/deleting zones, and configuring the orientation.\nAssign Content: Click each zone to assign the specific content (asset, playlist, or schedule) you want to display.\nSave: Preview your layout, then click Save to add it to your Asset list.\nDeploy: Go to the Screens tab, click Edit on your desired screen, and set the Type to Asset, then select your new Split Screen asset.\n\nFor more details on configuration settings like resolution, audio zones, or troubleshooting display ratios, refer to the full guide here: Article URL: https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App.\n\nSources\nHow to Create and Use the Split Screen App\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App"
+      }
+    }
+  ]
+}

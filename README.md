@@ -4,6 +4,18 @@ A Python job that turns the OptiSigns Help Center into a Gemini File Search know
 
 **Flow:** Zendesk API → Markdown → File Search → cited answers.
 
+## Recorded demo
+
+Seven consecutive questions typed in Chrome, with real Gemini File Search answers and citations.
+
+[![Watch the local chatbot answer seven questions](docs/media/part1-demo.gif)](docs/media/part1-demo.mp4)
+
+**GIF:** API waits removed, playback at 1.5×, looping automatically. **Full MP4:** all seven questions and real answers at normal speed; technical recording pauses omitted. Recorded with `gemini-3.1-flash-lite`; the project default is unchanged.
+
+[Full MP4](docs/media/part1-demo.mp4) · [Recorded transcript](docs/logs/2026-11-07-recorded-demo.json) · [Still image](docs/img/chat-ui.png)
+
+This is the local Part 1 UI, **not AI Studio or the official OptiBot**. The UI substitution and estimated chunk count remain assignment deviations.
+
 ## Quick start
 
 Requires **Python 3.12** and a Gemini API key with File Search access. From the cloned repository root:
@@ -47,6 +59,3 @@ Cloud Scheduler → Cloud Run at **02:23 UTC daily**, project `kbsync-7f3a`, `us
 - [7 Nov scheduled run](docs/logs/2026-11-07T065056Z-kb-sync-x4b7h.log): 2 updated, 394 skipped, 2 removed, exit 0. [Trigger](docs/logs/2026-11-07-scheduler-clock.json).
 - [Checklist](docs/CHECKLIST.md) · [CI](https://github.com/hoainho/quartz-lantern-7f3a/actions/workflows/tests.yml) · [Deviations](docs/SUBMISSION_NOTE.md) · [Answer transcript](docs/sanity-check.md).
 
-**Screenshot:** real local UI, **not AI Studio**. This substitution and the estimated chunk count remain deviations. Click to enlarge.
-
-<a href="docs/img/chat-ui.png"><img src="docs/img/chat-ui.png" width="180" alt="Local assistant answering the YouTube question with article citations"></a>

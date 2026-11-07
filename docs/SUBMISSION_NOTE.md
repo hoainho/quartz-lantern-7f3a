@@ -12,7 +12,7 @@ Reviewed on 2026-11-07 against the original Part 1 brief. This document separate
 
 ## Implementation choices and scope
 
-- **Provider:** Gemini File Search handles indexing and retrieval. `gemini-3.6-flash` was used for the recorded answers after the attempted `gemini-3.8-flash` calls returned 503/504 errors. The brief does not require a particular Gemini model.
+- **Provider:** Gemini File Search handles indexing and retrieval. The original sanity-check answers used `gemini-3.6-flash` after `gemini-3.8-flash` returned 503/504 errors. The completed browser demo used `gemini-3.1-flash-lite` because the original model's daily quota was exhausted. The brief does not require a particular Gemini model.
 - **Daily hosting:** Cloud Run Jobs and Cloud Scheduler on GCP, which is explicitly allowed by the brief. Deployment requires a billing-enabled project. Free-tier allowances are not a guarantee of zero cost.
 - **State:** article IDs and content hashes live in remote document metadata. The scheduled container needs no persistent volume or separate database.
 - **Replacement safety:** upload and index the replacement before deleting the old document. Failed uploads leave the old copy available.
@@ -34,10 +34,11 @@ Reviewed on 2026-11-07 against the original Part 1 brief. This document separate
 | Responsive chat verification | No horizontal overflow or composer overlap at 320, 390, 768, 1440, 1920 and 2560px widths, plus 667×375 landscape with the context panel open | Chromium viewport emulation; not physical-phone or Safari evidence |
 | Streaming and UI regression checks | 95 offline tests passed; loading, partial-answer errors, truncated streams, safe rendering, reduced motion, keyboard input and resize scroll recovery exercised | Existing test suite and controlled browser-provider fixtures; fixtures are not live model answers |
 | User-Chrome conversation | Seven consecutive questions received real, cited Gemini 3.6 Flash answers; native per-character keyboard input was exercised | [Conversation transcript](logs/2026-11-07-chrome-seven-questions.json). The recording failed during finalization; this is **not** a completed video. |
+| Completed browser demo | Seven consecutive native-typed questions and seven real cited answers in the user's Chrome using Gemini 3.1 Flash-Lite | [Full MP4](media/part1-demo.mp4), [looping GIF](media/part1-demo.gif), [recorded transcript](logs/2026-11-07-recorded-demo.json) |
 
 The source changed between runs: the first run fetched 398 articles, while the scheduled run fetched 396. These are dated observations, not a fixed corpus-size promise. The scheduled run now provides live evidence for removal, which was previously covered only by tests.
 
-**Video status:** not ready. One capture hit a disk-write error and the complete seven-question capture hit the recorder's 29-second finalization timeout. A replacement live encoder produced a decodable probe, but new generation is now blocked: Gemini 3.6 Flash exhausted its daily quota, Gemini 3.7 Flash returned 503, Gemini 2.5 Flash was unavailable to new users, and the Gemini 3.5 Flash probe reported the same 3.6 quota bucket. No replayed answers are presented as a live demo. Temporary model overrides did not change the project's default.
+**Video status:** complete. The MP4 contains all seven questions, real-time typing, API waits and real responses, with technical recording pauses omitted between capture segments. The looping GIF additionally removes API waiting intervals and plays the remaining real footage at 1.5×. Gemini 3.1 Flash-Lite was verified with File Search and used only for the recording process after the 3.6 quota and other model availability failures. The default model, system prompt and knowledge store were not changed. Earlier failed-capture evidence remains historical; no archived answers were replayed as live responses.
 
 ## Remaining limitations and pre-submission checks
 
