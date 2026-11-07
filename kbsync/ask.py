@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -68,18 +69,75 @@ def extract_sources(response: Any, limit: int = MAX_SOURCES) -> list[Source]:
     return sources[:limit]
 
 
-def ask(client: Any, model: str, store_name: str, question: str) -> Reply:
+def _generate_config(store_name: str) -> Any:
     from google.genai import types
 
+    return types.GenerateContentConfig(
+        system_instruction=load_system_prompt(),
+        tools=[types.Tool(file_search=types.FileSearch(file_search_store_names=[store_name]))],
+    )
+
+
+def ask(client: Any, model: str, store_name: str, question: str) -> Reply:
     response = client.models.generate_content(
-        model=model,
-        contents=question,
-        config=types.GenerateContentConfig(
-            system_instruction=load_system_prompt(),
-            tools=[types.Tool(file_search=types.FileSearch(file_search_store_names=[store_name]))],
-        ),
+        model=model, contents=question, config=_generate_config(store_name)
     )
     return Reply(text=response.text or "", sources=extract_sources(response))
+
+
+@dataclass(frozen=True)
+class Delta:
+    """A non-empty piece of answer text exactly as the provider sent it."""
+
+    text: str
+
+
+@dataclass(frozen=True)
+class Done:
+    """Terminal event: the complete raw answer and every distinct retrieved source (capped)."""
+
+    reply: Reply
+
+
+StreamEvent = Delta | Done
+
+
+class EmptyReply(RuntimeError):
+    """The provider stream finished without usable text (blocked or empty response)."""
+
+
+def ask_stream(client: Any, model: str, store_name: str, question: str) -> Iterator[StreamEvent]:
+    """Same request as `ask`, but yields a `Delta` per provider text chunk, then one `Done`.
+
+    Grounding metadata can arrive in any chunk (often the last), so sources are aggregated across
+    all chunks in retrieval order. The provider stream is closed when this generator finishes,
+    fails, or is closed by a consumer that went away; a provider error propagates to the caller.
+    A stream that finishes without non-blank text raises `EmptyReply` instead of yielding `Done`.
+    """
+    stream = client.models.generate_content_stream(
+        model=model, contents=question, config=_generate_config(store_name)
+    )
+    parts: list[str] = []
+    sources: list[Source] = []
+    seen: set[str] = set()
+    try:
+        for chunk in stream:
+            for source in extract_sources(chunk):
+                if len(sources) < MAX_SOURCES and source.url not in seen:
+                    seen.add(source.url)
+                    sources.append(source)
+            text = chunk.text or ""
+            if text:
+                parts.append(text)
+                yield Delta(text)
+    finally:
+        close = getattr(stream, "close", None)
+        if close is not None:
+            close()
+    text = "".join(parts)
+    if not text.strip():
+        raise EmptyReply("the model returned no answer text")
+    yield Done(Reply(text=text, sources=sources))
 
 
 def format_reply(reply: Reply) -> str:

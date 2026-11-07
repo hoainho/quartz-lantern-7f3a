@@ -1,0 +1,27 @@
+{
+  "content_type": "application/x-ndjson",
+  "event_types": [
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "done"
+  ],
+  "first_event_seconds": 9.782,
+  "total_seconds": 10.673,
+  "last_event": {
+    "type": "done",
+    "text": "To add a YouTube video to OptiSigns, follow these steps:\n\n* Go to **Files/Assets**, select **Apps**, and choose the **YouTube** app.\n* Enter an asset **Name** and paste the link to your video in the **URL** field.\n* (Optional) Adjust **Display Options** (Caption, Mute) or **Playback Options** (Start At, End At).\n* Click **Save** to add the video to your Assets.\n* Go to the **Screens** tab, click **Edit** next to your screen, select **Asset** as the Content Type, pick your YouTube asset, and click **Save**.\n\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns",
+    "sources": [
+      {
+        "title": "How to Use YouTube with OptiSigns",
+        "url": "https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns"
+      }
+    ]
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "target": "http://127.0.0.1:18080/",
+  "browser": "Actual user Chrome via relay",
+  "model": "gemini-3.6-flash",
+  "recordingStatus": "Seven answers completed, but recordStop timed out after 29 seconds and the capture was not recovered. This transcript is not a completed video.",
+  "turns": [
+    {
+      "number": 1,
+      "question": "How do I add a YouTube video?",
+      "typingStartSeconds": 2.002,
+      "typingEndSeconds": 5.429,
+      "sentSeconds": 6.63,
+      "completedSeconds": 26.726,
+      "result": {
+        "answers": 1,
+        "links": [
+          {
+            "title": "How to Use YouTube with OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo add a YouTube video to OptiSigns, follow these steps:\n\nGo to Files/Assets in the OptiSigns portal and select Apps.\nSearch for and select the YouTube app.\nEnter an asset Name and paste your public or unlisted video link into the URL field.\n(Optional) Configure Display Options (Mute, Captions) or Playback Options (Start At, End At).\nClick Save, then assign the created YouTube asset to a Screen, Playlist, or Schedule.\nSources\nHow to Use YouTube with OptiSigns\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns",
+        "users": 1
+      }
+    },
+    {
+      "number": 2,
+      "question": "How do I set up my first screen with OptiSigns?",
+      "typingStartSeconds": 41.742,
+      "typingEndSeconds": 47.195,
+      "sentSeconds": 48.399,
+      "completedSeconds": 63.474,
+      "result": {
+        "answers": 2,
+        "links": [
+          {
+            "title": "Set Up Add or Unpair a Screen",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo set up your first screen with OptiSigns, follow these steps:\n\nInstall the OptiSigns App: Download and install the OptiSigns app on your player device, then open it to get your pairing code.\nPair Your Screen: Log in to your account at app.optisigns.com, navigate to the Screens page, click Add Screen, enter the pairing code shown on your display (note that codes are case-sensitive), and click Pair.\nUpload Content: Go to Files/Assets, click Upload Files, and upload your desired files or media.\nPush Content to Screen: Open the menu on your uploaded file, select Push To Screens, choose your screen, and click Push.\nSources\nSet Up Add or Unpair a Screen\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016374813-Set-Up-Add-or-Unpair-a-Screen",
+        "users": 2
+      }
+    },
+    {
+      "number": 3,
+      "question": "How do I create a playlist with images and videos?",
+      "typingStartSeconds": 83.667,
+      "typingEndSeconds": 89.443,
+      "sentSeconds": 90.644,
+      "completedSeconds": 138.326,
+      "result": {
+        "answers": 3,
+        "links": [
+          {
+            "title": "https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists",
+            "url": "https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists"
+          },
+          {
+            "title": "How to Manage and Edit Your Playlist Settings",
+            "url": "https://support.optisigns.com/hc/en-us/articles/28295074995859-How-to-Manage-and-Edit-Your-Playlist-Settings"
+          },
+          {
+            "title": "How to Create Use Playlists",
+            "url": "https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo create a playlist with images and videos in OptiSigns:\n\nNavigate to Playlists on the top navigation bar and click Create Playlist (or New).\nName your playlist so it is easy to identify.\nDrag and drop your images and videos into the playlist, or select assets from your Files/Assets panel and click Add Selected Items to Playlist.\nAdjust item durations by clicking the pencil icon or duration number next to each asset.\nClick Push to Screens at the top of your playlist to deploy the content to your screen(s) immediately or on a schedule.\n\nArticle URL:\nhttps://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists\n\nSources\nHow to Manage and Edit Your Playlist Settings\nArticle URL: https://support.optisigns.com/hc/en-us/articles/28295074995859-How-to-Manage-and-Edit-Your-Playlist-Settings\nHow to Create Use Playlists\nArticle URL: https://support.optisigns.com/hc/en-us/articles/28295104605843-How-to-Create-Use-Playlists",
+        "users": 3
+      }
+    },
+    {
+      "number": 4,
+      "question": "How do I schedule a playlist for weekdays from 9 AM to 6 PM?",
+      "typingStartSeconds": 153.344,
+      "typingEndSeconds": 160.297,
+      "sentSeconds": 161.499,
+      "completedSeconds": 186.597,
+      "result": {
+        "answers": 4,
+        "links": [
+          {
+            "title": "https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns"
+          },
+          {
+            "title": "Creating and Using Schedules with OptiSigns",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo schedule a playlist for weekdays from 9 AM to 6 PM in OptiSigns, follow these steps:\n\nCreate a Schedule: Go to the Schedules tab on the top navigation bar and click Create Schedule.\nAdd an Event: Click Add Event, select your playlist, and set the time from 9:00 AM to 6:00 PM.\nSet Recurrence: Under the recurrence settings, select Repeat Weekly and check the days for Monday through Friday.\nSave & Assign: Click Save to finalize the schedule, then assign it to your screen(s) via the Screens tab or by using Push to Screen.\n\nArticle URL:\n\nhttps://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns\nSources\nCreating and Using Schedules with OptiSigns\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016981853-Creating-and-Using-Schedules-with-OptiSigns",
+        "users": 4
+      }
+    },
+    {
+      "number": 5,
+      "question": "How do I assign the same playlist to multiple screens?",
+      "typingStartSeconds": 201.61,
+      "typingEndSeconds": 207.868,
+      "sentSeconds": 209.07,
+      "completedSeconds": 229.128,
+      "result": {
+        "answers": 5,
+        "links": [
+          {
+            "title": "Push Contents to your Screens",
+            "url": "https://support.optisigns.com/hc/en-us/articles/18988049363859-Push-Contents-to-your-Screens"
+          },
+          {
+            "title": "360016375153 Assign content to your screens",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360016375153-Assign-content-to-your-screens"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nYou can assign the same playlist to multiple screens using two methods:\n\nGroup Edit (Screens Management): Go to Screens Management, select the checkbox next to each screen, click Edit, set Type to Playlist, choose your playlist, and click Save.\nPush to Screens (Playlists Page): Go to the Playlists page, click Push to Screens next to your playlist, select the target screens, and choose your push option (Push immediately, Schedule Changes, or Temp Takeover).\nSources\nPush Contents to your Screens\nArticle URL: https://support.optisigns.com/hc/en-us/articles/18988049363859-Push-Contents-to-your-Screens\n360016375153 Assign content to your screens\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360016375153-Assign-content-to-your-screens",
+        "users": 5
+      }
+    },
+    {
+      "number": 6,
+      "question": "What should I check when my OptiSigns screen is offline?",
+      "typingStartSeconds": 251.84,
+      "typingEndSeconds": 258.299,
+      "sentSeconds": 259.5,
+      "completedSeconds": 294.598,
+      "result": {
+        "answers": 6,
+        "links": [
+          {
+            "title": "360047275934",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360047275934"
+          },
+          {
+            "title": "35626165056787 How to Contact OptiSigns Support",
+            "url": "https://support.optisigns.com/hc/en-us/articles/35626165056787-How-to-Contact-OptiSigns-Support"
+          },
+          {
+            "title": "Kiosk32",
+            "url": "https://support.optisigns.com/hc/en-us/articles/44669013147923-Kiosk32"
+          },
+          {
+            "title": "OptiSigns Pro ProMax Player Troubleshooting Guide",
+            "url": "https://support.optisigns.com/hc/en-us/articles/40736654972563-OptiSigns-Pro-ProMax-Player-Troubleshooting-Guide"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nWhen your OptiSigns screen appears offline in the portal, it is typically due to a network connection issue. Here are the key steps to check and troubleshoot:\n\nMobile Hotspot or Alternate Network: Try connecting the device to a mobile hotspot or a different Wi-Fi network. If it connects successfully, the issue is with your primary Wi-Fi network.\nEthernet Connection: Plug an Ethernet cable directly into the device to check if it can re-establish a connection.\nFirewall Settings: Verify that your network firewall is not blocking OptiSigns and that the required URLs, IP addresses, and ports are whitelisted.\nTroubleshooting Page (Pro/ProMax): Check the network status box on the Troubleshooting Page. Green text means there are no network issues, while red text indicates a specific error.\nFactory Reset: If connection attempts fail, perform a Factory Reset on the device and complete the initial setup again.\n\nIf your device still cannot connect to any network after trying these steps, please reach out to our support team.\n\nSources\n360047275934\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360047275934\n35626165056787 How to Contact OptiSigns Support\nArticle URL: https://support.optisigns.com/hc/en-us/articles/35626165056787-How-to-Contact-OptiSigns-Support\nKiosk32\nArticle URL: https://support.optisigns.com/hc/en-us/articles/44669013147923-Kiosk32\nOptiSigns Pro ProMax Player Troubleshooting Guide\nArticle URL: https://support.optisigns.com/hc/en-us/articles/40736654972563-OptiSigns-Pro-ProMax-Player-Troubleshooting-Guide",
+        "users": 6
+      }
+    },
+    {
+      "number": 7,
+      "question": "How do I use Split Screen to show content in different zones?",
+      "typingStartSeconds": 309.611,
+      "typingEndSeconds": 316.633,
+      "sentSeconds": 317.835,
+      "completedSeconds": 337.916,
+      "result": {
+        "answers": 7,
+        "links": [
+          {
+            "title": "https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App"
+          },
+          {
+            "title": "How to Create and Use the Split Screen App",
+            "url": "https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App"
+          }
+        ],
+        "state": "done",
+        "text": "OptiBot\n\nTo use the Split Screen app to show content in different zones, follow these steps:\n\nCreate the App: Go to Files/Assets > App in the portal and select Split Screen.\nSelect a Template: Choose a pre-made template or build a custom layout.\nConfigure Zones: Name your Split Screen layout and adjust the size/position of each zone by dragging its edges or changing the dimension settings.\nAssign Content: Select each zone and choose the content you want to play inside it (such as an asset, playlist, or schedule).\nSave & Assign: Click Save, then navigate to the Screens tab, edit your target screen, and set its content to your newly created Split Screen asset.\n\nArticle URL:\nhttps://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App\n\nSources\nHow to Create and Use the Split Screen App\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360026559573-How-to-Create-and-Use-the-Split-Screen-App",
+        "users": 7
+      }
+    }
+  ]
+}

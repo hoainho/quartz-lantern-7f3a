@@ -1,6 +1,19 @@
 from types import SimpleNamespace as NS
 
-from kbsync.ask import Reply, Source, extract_sources, format_reply, load_system_prompt, title_from_url
+import pytest
+
+from kbsync.ask import (
+    Delta,
+    Done,
+    EmptyReply,
+    Reply,
+    Source,
+    ask_stream,
+    extract_sources,
+    format_reply,
+    load_system_prompt,
+    title_from_url,
+)
 
 
 def _chunk(url, title="T", extra=()):
@@ -65,3 +78,98 @@ def test_model_that_wrote_markdown_links_instead_of_the_prefix_still_gets_articl
     )
 
     assert format_reply(reply).endswith("\n\nArticle URL: https://h/1\nArticle URL: https://h/2")
+
+
+class _Stream:
+    """Stands in for the SDK's chunk iterator; records whether it was closed."""
+
+    def __init__(self, chunks, fail_after=None):
+        self._chunks = iter(chunks)
+        self._fail_after = fail_after
+        self._served = 0
+        self.closed = False
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._fail_after is not None and self._served >= self._fail_after:
+            raise RuntimeError("provider broke")
+        self._served += 1
+        return next(self._chunks)
+
+    def close(self):
+        self.closed = True
+
+
+class _Client:
+    def __init__(self, stream):
+        self.stream = stream
+        self.kwargs = None
+        self.models = self
+
+    def generate_content_stream(self, **kwargs):
+        self.kwargs = kwargs
+        return self.stream
+
+
+def _piece(text, *chunks):
+    response = _response(*chunks, grounded=bool(chunks))
+    response.text = text
+    return response
+
+
+def test_stream_yields_text_as_it_arrives_and_aggregates_late_grounding_across_chunks():
+    stream = _Stream(
+        [
+            _piece("Hel"),
+            _piece("", _chunk("https://h/1")),  # metadata-only chunk: no delta
+            _piece("lo", _chunk("https://h/1"), _chunk("https://h/2")),
+            _piece(None, _chunk("https://h/2"), _chunk("https://h/3"), _chunk("https://h/4")),
+        ]
+    )
+    client = _Client(stream)
+
+    events = list(ask_stream(client, "m", "stores/s", "q"))
+
+    assert events == [
+        Delta("Hel"),
+        Delta("lo"),
+        Done(
+            Reply(
+                "Hello",
+                [Source("1", "https://h/1"), Source("2", "https://h/2"), Source("3", "https://h/3")],
+            )
+        ),
+    ]
+    assert stream.closed
+
+
+def test_closing_the_stream_early_closes_the_provider_iterator():
+    stream = _Stream([_piece("a"), _piece("b")])
+    events = ask_stream(_Client(stream), "m", "stores/s", "q")
+
+    assert next(events) == Delta("a")
+    events.close()  # what the web layer does when the browser goes away
+
+    assert stream.closed
+
+
+def test_provider_failure_after_partial_text_propagates_without_a_done_event():
+    stream = _Stream([_piece("partial"), _piece("never")], fail_after=1)
+    events = ask_stream(_Client(stream), "m", "stores/s", "q")
+
+    assert next(events) == Delta("partial")
+    with pytest.raises(RuntimeError):
+        next(events)
+    assert stream.closed
+
+
+@pytest.mark.parametrize("text", [None, "", "  \n"])
+def test_stream_with_no_usable_text_fails_instead_of_reporting_success(text):
+    stream = _Stream([_piece(text, _chunk("https://h/1"))])  # grounded, but the answer is empty
+    events = ask_stream(_Client(stream), "m", "stores/s", "q")
+
+    with pytest.raises(EmptyReply):
+        list(events)
+    assert stream.closed

@@ -31,7 +31,7 @@ docker build -t sync-job .
 docker run --rm --env-file .env sync-job
 ```
 
-Runs once, without a volume. Also accepts `-e API_KEY=...`. For a key-free scrape: `.venv/bin/python -m kbsync.scrape`. For the local UI: `.venv/bin/python -m kbsync.web`, then http://127.0.0.1:8080. The UI is unauthenticated and local only.
+Runs once, without a volume. Also accepts `-e API_KEY=...`. For a key-free scrape: `.venv/bin/python -m kbsync.scrape`. For the responsive, streaming local UI: `.venv/bin/python -m kbsync.web`, then http://127.0.0.1:8080. It is unauthenticated and local-only.
 
 ## Design
 

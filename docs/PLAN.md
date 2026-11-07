@@ -55,3 +55,13 @@ bottom of the "Cut order" list, never the graded core.
 3. Extra Markdown cleaning edge cases
 
 Never cut: API upload, delta logic, deployed daily job with logs.
+
+## Requested local-demo improvements — 2026-11-07
+
+These additions follow the original implementation; they do not change the historical time estimate above.
+
+- [x] Responsive local chat, an in-flow composer, readable citations and explicit Part 1 demo identity.
+- [x] Reduced-motion-aware loading skeletons and real Gemini File Search streaming, with sanitized failures and interrupted-stream recovery.
+- [x] Offline regressions and browser viewport/interaction checks; see [CHECKLIST.md](CHECKLIST.md).
+- [ ] Record 7–10 real questions in the user's Chrome, showing each question being typed before submission.
+  - Blocked: the completed capture failed during encoder finalization. A live-encoding replacement was verified, but provider quota/availability now prevents a fresh complete take. The [seven-answer transcript](logs/2026-11-07-chrome-seven-questions.json) is retained and explicitly distinguished from a video.

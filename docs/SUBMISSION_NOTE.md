@@ -18,7 +18,7 @@ Reviewed on 2026-11-07 against the original Part 1 brief. This document separate
 - **Replacement safety:** upload and index the replacement before deleting the old document. Failed uploads leave the old copy available.
 - **Extra deletion behavior:** documents missing from the source are removed, with a per-run budget of the greater of five articles or 20% of remote article IDs. This limits a large accidental deletion, but it does not prove that a smaller source omission is intentional.
 - **Content omitted:** article images and alt text. Headings, relative links and code blocks remain. YouTube and Vimeo embeds become plain video links.
-- **Local demo only:** the chat UI has no authentication and is not publicly deployed. A hosted chat product was not built.
+- **Local demo only:** the responsive chat UI has no authentication and is not publicly deployed. It streams real Gemini text through NDJSON, shows a loading skeleton before the first text, and adds source links at completion. The UI identifies itself as the Part 1 local demo, not the official OptiSigns service. A hosted chat product was not built.
 
 ## Recorded runtime evidence
 
@@ -30,8 +30,14 @@ Reviewed on 2026-11-07 against the original Part 1 brief. This document separate
 | Daily clock trigger | Scheduled for 2026-11-07 02:23 UTC, Scheduler received HTTP 200 | [Scheduler events](logs/2026-11-07-scheduler-clock.json) |
 | Scheduled job completion | `added=0 updated=2 skipped=394 removed=2 failed=0`, exit 0 | [Cloud Run kb-sync-x4b7h](logs/2026-11-07T065056Z-kb-sync-x4b7h.log) |
 | Answers | Two in-scope answers with article citations and one out-of-scope refusal | [Transcript](sanity-check.md) |
+| Local HTTP streaming | Nine provider text deltas followed by a final answer with the YouTube article citation; first event after 9.782s, completion after 10.673s | [HTTP stream capture](logs/2026-11-07-local-chat-stream.json) |
+| Responsive chat verification | No horizontal overflow or composer overlap at 320, 390, 768, 1440, 1920 and 2560px widths, plus 667×375 landscape with the context panel open | Chromium viewport emulation; not physical-phone or Safari evidence |
+| Streaming and UI regression checks | 95 offline tests passed; loading, partial-answer errors, truncated streams, safe rendering, reduced motion, keyboard input and resize scroll recovery exercised | Existing test suite and controlled browser-provider fixtures; fixtures are not live model answers |
+| User-Chrome conversation | Seven consecutive questions received real, cited Gemini 3.6 Flash answers; native per-character keyboard input was exercised | [Conversation transcript](logs/2026-11-07-chrome-seven-questions.json). The recording failed during finalization; this is **not** a completed video. |
 
 The source changed between runs: the first run fetched 398 articles, while the scheduled run fetched 396. These are dated observations, not a fixed corpus-size promise. The scheduled run now provides live evidence for removal, which was previously covered only by tests.
+
+**Video status:** not ready. One capture hit a disk-write error and the complete seven-question capture hit the recorder's 29-second finalization timeout. A replacement live encoder produced a decodable probe, but new generation is now blocked: Gemini 3.6 Flash exhausted its daily quota, Gemini 3.7 Flash returned 503, Gemini 2.5 Flash was unavailable to new users, and the Gemini 3.5 Flash probe reported the same 3.6 quota bucket. No replayed answers are presented as a live demo. Temporary model overrides did not change the project's default.
 
 ## Remaining limitations and pre-submission checks
 
